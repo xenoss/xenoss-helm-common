@@ -8,7 +8,7 @@ keywords:
   - common
   - template
   - function
-name: common
+name: xenoss-helm-common
 sources:
   - https://github.com/xenoss/xenoss-helm-common
 type: library
