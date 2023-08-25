@@ -3,4 +3,4 @@ dependencies:
   repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
   version: 1.0.1
 digest: sha256:07f117bd7431756aa057207117ce99d008e16f04c01de7e4dde94d74dd24c451
-generated: "2023-08-25T11:55:55.9034006+03:00"
+generated: "2023-08-25T11:56:09.057436+03:00"
