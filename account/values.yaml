@@ -16,10 +16,10 @@ global:
   ##
   imagePullSecrets: []
 
-## @param nameOverride String to partially override filex.fullname include (will maintain the release name)
+## @param nameOverride String to partially override account.fullname include (will maintain the release name)
 ##
 nameOverride: ""
-## @param fullnameOverride String to fully override filex.fullname template
+## @param fullnameOverride String to fully override account.fullname template
 ##
 fullnameOverride: ""
 ## @param extraDeploy Extra objects to deploy (evaluated as a template)
@@ -216,10 +216,10 @@ metrics:
     ##
     jobLabel: ""
 
-## FileX service parameters
+## Account service parameters
 ##
 service:
-  ## @param service.type FileX Service type
+  ## @param service.type Account Service type
   ##
   type: ClusterIP
   ports:
@@ -231,28 +231,28 @@ service:
     http: ""
     remoting: ""
     metrics: ""
-  ## @param service.clusterIP FileX service Cluster IP
+  ## @param service.clusterIP Account service Cluster IP
   ## e.g.:
   ## clusterIP: None
   ##
   clusterIP: ""
-  ## @param service.loadBalancerIP FileX service Load Balancer IP
+  ## @param service.loadBalancerIP Account service Load Balancer IP
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
   ##
   loadBalancerIP: ""
-  ## @param service.loadBalancerSourceRanges FileX service Load Balancer sources
+  ## @param service.loadBalancerSourceRanges Account service Load Balancer sources
   ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
   ## e.g:
   ## loadBalancerSourceRanges:
   ##   - 10.10.10.0/24
   ##
   loadBalancerSourceRanges: []
-  ## @param service.annotations Additional custom annotations for FileX service
+  ## @param service.annotations Additional custom annotations for Account service
   ## This can be used to set the LoadBalancer service type to internal only.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
   ##
   annotations: {}
-  ## @param service.externalTrafficPolicy FileX service external traffic policy
+  ## @param service.externalTrafficPolicy Account service external traffic policy
   ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
   ##
   externalTrafficPolicy: Cluster
@@ -335,7 +335,7 @@ extraEnvVarsCM: ""
 ##
 extraEnvVarsSecret: ""
 
-## @param replicaCount Number of FileX replicas to deploy
+## @param replicaCount Number of Account replicas to deploy
 ##
 replicaCount: 1
 
@@ -346,11 +346,11 @@ extraVolumes: []
 ##
 extraVolumeMounts: []
 
-## @param podLabels [object] Extra labels for FileX pods
+## @param podLabels [object] Extra labels for Account pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
 podLabels: {}
-## @param podAnnotations [object] Annotations for FileX pods
+## @param podAnnotations [object] Annotations for Account pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}

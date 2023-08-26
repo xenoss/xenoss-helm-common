@@ -4,7 +4,7 @@ metadata:
   name: {{ include "common.fullname" . }}
   namespace: {{ include "common.namespace" . | quote }}
   labels: {{- include "common.labels" . | nindent 4 }}
-    app.kubernetes.io/part-of: filex
+    app.kubernetes.io/part-of: account
     {{- if .Values.commonLabels }}
     {{- tpl ( .Values.commonLabels | toYaml ) $ | nindent 4 }}
     {{- end }}
