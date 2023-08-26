@@ -13,6 +13,19 @@ global:
   extraDeploy: []
 
 common:
+  extraContainerPorts:
+    - name: http
+      containerPort: 8080
+    - name: http_private
+      containerPort: 8081
+  service:
+    extraPorts:
+      - name: http
+        port: 8080
+        targetPort: http
+      - name: http_private
+        port: 8081
+        targetPort: http
   nameOverride: account
   metrics:
     enabled: true

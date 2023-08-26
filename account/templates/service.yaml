@@ -36,26 +36,8 @@ spec:
   {{- if .Values.service.sessionAffinityConfig }}
   sessionAffinityConfig: {{- tpl ( .Values.service.sessionAffinityConfig | toYaml ) $ | nindent 4 }}
   {{- end }}
+  {{- if .Values.service.extraPorts }}
   ports:
-    - name: http
-      port: {{ coalesce .Values.service.ports.http .Values.service.port}}
-      targetPort: http
-      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.http)) }}
-      nodePort: {{ .Values.service.nodePorts.http }}
-      {{- end }}
-    - name: remoting
-      port: {{ coalesce .Values.service.ports.remoting .Values.service.remotingPort}}
-      targetPort: remoting
-      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.remoting)) }}
-      nodePort: {{ .Values.service.nodePorts.remoting }}
-      {{- end }}
-    - name: metrics
-      port: {{ coalesce .Values.service.ports.metrics .Values.service.metricsPort}}
-      targetPort: metrics
-      {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.metrics)) }}
-      nodePort: {{ .Values.service.nodePorts.metrics }}
-      {{- end }}
-    {{- if .Values.service.extraPorts }}
     {{- tpl ( .Values.service.extraPorts | toYaml ) $ | nindent 4 }}
-    {{- end }}
+  {{- end }}
   selector: {{- include "common.matchLabels" . | nindent 4 }}

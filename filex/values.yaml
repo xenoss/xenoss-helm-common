@@ -14,8 +14,25 @@ global:
 
 common:
   nameOverride: filex
+  extraContainerPorts:
+    - name: http
+      containerPort: 8080
+    - name: http_private
+      containerPort: 8081
+  service:
+    extraPorts:
+      - name: http
+        port: 8080
+        targetPort: http
+      - name: http_private
+        port: 8081
+        targetPort: http
+
   metrics:
     enabled: true
+    service:
+      ports:
+        http: 8081
     serviceMonitor:
       enabled: true
       port: http_private
