@@ -172,13 +172,11 @@ service:
   type: ClusterIP
   ports:
     http: 8080
-    remoting: 8081
-    metrics: 9102
+    http_private: 8081
   ## Node ports to expose
   nodePorts:
     http: ""
-    remoting: ""
-    metrics: ""
+    http_private: ""
   ## @param service.clusterIP Account service Cluster IP
   ## e.g.:
   ## clusterIP: None
@@ -342,8 +340,7 @@ resources:
 ##
 containerPorts:
   http: 8080
-  remoting: 8081
-  metrics: 9102
+  http_private: 8081
 ## @param extraContainerPorts [array] Array with extra container ports to add to the Account container
 ## e.g:
 ## extraContainerPorts:
