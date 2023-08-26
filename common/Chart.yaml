@@ -1,7 +1,7 @@
 annotations:
   category: Infrastructure
 apiVersion: v2
-appVersion: 1.0.1
+appVersion: 1.0.2
 description: A Library Helm Chart for grouping common logic between xenoss charts. This chart is not deployable by itself.
 home: https://github.com/xenoss/xenoss-helm-common
 keywords:
@@ -11,5 +11,5 @@ keywords:
 name: common
 sources:
   - https://github.com/xenoss/xenoss-helm-common
-type: library
-version: 1.0.1
+type: application
+version: 1.0.2

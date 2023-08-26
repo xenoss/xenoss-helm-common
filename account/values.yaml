@@ -1,10 +1,3 @@
-## @section Common parameters
-
-## @section Global parameters
-## Global Docker image parameters
-## Please, note that this will override the image parameters, including dependencies, configured to use the global value
-## Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass
-
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets [array] Global Docker registry secret names as an array
 ##
@@ -15,6 +8,17 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
+  ## @param extraDeploy Extra objects to deploy (evaluated as a template)
+  ##
+  extraDeploy: []
+
+common:
+  nameOverride: account
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      port: http_private
 
 ## @param nameOverride String to partially override account.fullname include (will maintain the release name)
 ##
@@ -22,9 +26,6 @@ nameOverride: ""
 ## @param fullnameOverride String to fully override account.fullname template
 ##
 fullnameOverride: ""
-## @param extraDeploy Extra objects to deploy (evaluated as a template)
-##
-extraDeploy: []
 ## @param commonAnnotations Annotations to add to all deployed objects
 ##
 commonAnnotations: {}
@@ -149,72 +150,6 @@ serviceAccount:
   name: ""
   automountServiceAccountToken: true
   annotations: {}
-
-## Metrics configuration
-##
-metrics:
-  ## @param metrics.enabled Enable exposing  statistics
-  ## ref: https://github.com/resmoio/kubernetes-event-exporter/blob/858089f2dc42243c0939a7f13a76fdd22e70be0f/main.go#L25
-  ##
-  enabled: false
-  ##  metrics service parameters
-  ##
-  service:
-    ## @param metrics.service.ports.http Metrics service HTTP port
-    ##
-    ports:
-      http: 2112
-    ## @param metrics.service.annotations [object] Annotations for enabling prometheus to access the metrics endpoints
-    ##
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "{{ .Values.metrics.service.ports.http }}"
-  ## Prometheus Operator ServiceMonitor configuration
-  ##
-  serviceMonitor:
-    ## @param metrics.serviceMonitor.enabled Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
-    ##
-    enabled: false
-    ## @param metrics.serviceMonitor.port Metrics service HTTP port
-    ##
-    port: metrics
-    ## @param metrics.serviceMonitor.endpoints [array] The endpoint configuration of the ServiceMonitor. Path is mandatory. Interval, timeout and labellings can be overwritten.
-    ##
-    endpoints:
-      - path: /metrics
-    ## @param metrics.serviceMonitor.path Metrics service HTTP path. Deprecated: Use @param metrics.serviceMonitor.endpoints instead
-    ##
-    path: ""
-    ## @param metrics.serviceMonitor.namespace Namespace which Prometheus is running in
-    ##
-    namespace: ""
-    ## @param metrics.serviceMonitor.interval Interval at which metrics should be scraped
-    ##
-    interval: 30s
-    ## @param metrics.serviceMonitor.scrapeTimeout Specify the timeout after which the scrape is ended
-    ## e.g:
-    ##   scrapeTimeout: 30s
-    ##
-    scrapeTimeout: ""
-    ## @param metrics.serviceMonitor.labels Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
-    ##
-    labels: {}
-    ## @param metrics.serviceMonitor.selector Prometheus instance selector labels
-    ## ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
-    ##
-    selector: {}
-    ## @param metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping
-    ##
-    relabelings: []
-    ## @param metrics.serviceMonitor.metricRelabelings MetricRelabelConfigs to apply to samples before ingestion
-    ##
-    metricRelabelings: []
-    ## @param metrics.serviceMonitor.honorLabels honorLabels chooses the metric's labels on collisions with target labels
-    ##
-    honorLabels: false
-    ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
-    ##
-    jobLabel: ""
 
 ## Account service parameters
 ##
