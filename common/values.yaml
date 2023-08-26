@@ -1,3 +1,8 @@
+globaL:
+  ## @param extraDeploy Extra objects to deploy (evaluated as a template)
+  ##
+  extraDeploy: []
+
 ## Metrics configuration
 ##
 metrics:
@@ -63,7 +68,3 @@ metrics:
     ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
     ##
     jobLabel: ""
-
-## @param extraDeploy Extra objects to deploy (evaluated as a template)
-##
-extraDeploy: []

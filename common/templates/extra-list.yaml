@@ -1,4 +1,4 @@
-{{- range ( default .Values.extraDeploy .Values.global.extraDeploy ) }}
+{{- range .Values.global.extraDeploy }}
 ---
 {{ tpl ( . | toYaml ) $ }}
 {{- end }}
