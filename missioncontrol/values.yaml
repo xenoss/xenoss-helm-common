@@ -20,6 +20,7 @@ common:
       enabled: true
       port: httpprivate
   service:
+    enabled: true
     ports:
       http: 8080
       httpprivate: 8081
