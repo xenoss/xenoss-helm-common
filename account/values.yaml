@@ -18,7 +18,7 @@ common:
     enabled: true
     serviceMonitor:
       enabled: true
-      port: http_private
+      port: httpprivate
 
 ## @param nameOverride String to partially override account.fullname include (will maintain the release name)
 ##
@@ -159,11 +159,11 @@ service:
   type: ClusterIP
   ports:
     http: 8080
-    http_private: 8081
+    httpprivate: 8081
   ## Node ports to expose
   nodePorts:
     http: ""
-    http_private: ""
+    httpprivate: ""
   ## @param service.clusterIP Account service Cluster IP
   ## e.g.:
   ## clusterIP: None
@@ -195,7 +195,7 @@ service:
     - name: http
       port: 8080
       targetPort: http
-    - name: http_private
+    - name: httpprivate
       port: 8081
       targetPort: http
   ## @param service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
@@ -333,7 +333,7 @@ resources:
 ##
 containerPorts:
   http: 8080
-  http_private: 8081
+  httpprivate: 8081
 ## @param extraContainerPorts [array] Array with extra container ports to add to the Account container
 ## e.g:
 ## extraContainerPorts:
@@ -343,7 +343,7 @@ containerPorts:
 extraContainerPorts:
   - name: http
     containerPort: 8080
-  - name: http_private
+  - name: httpprivate
     containerPort: 8081
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
