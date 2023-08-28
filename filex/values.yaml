@@ -14,19 +14,6 @@ global:
 
 common:
   nameOverride: filex
-  extraContainerPorts:
-    - name: http
-      containerPort: 8080
-    - name: http_private
-      containerPort: 8081
-  service:
-    extraPorts:
-      - name: http
-        port: 8080
-        targetPort: http
-      - name: http_private
-        port: 8081
-        targetPort: http
 
   metrics:
     enabled: true
@@ -103,7 +90,13 @@ service:
   externalTrafficPolicy: Cluster
   ## @param service.extraPorts Extra ports to expose (normally used with the `sidecar` value)
   ##
-  extraPorts: []
+  extraPorts:
+    - name: http
+      port: 8080
+      targetPort: http
+    - name: http_private
+      port: 8081
+      targetPort: http
   ## @param service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
   ## If "ClientIP", consecutive client requests will be directed to the same mongos Pod
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
@@ -233,7 +226,11 @@ containerPorts:
 ##   - name: additional-port
 ##     value: 8888
 ##
-extraContainerPorts: []
+extraContainerPorts:
+  - name: http
+    containerPort: 8080
+  - name: http_private
+    containerPort: 8081
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enabled Filex pods' Security Context
