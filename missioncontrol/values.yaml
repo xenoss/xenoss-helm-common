@@ -1,19 +1,25 @@
 global:
+  ## @param global.imageRegistry Global Docker image registry
+  ## @param global.imagePullSecrets [array] Global Docker registry secret names as an array
+  ##
   imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
   imagePullSecrets: []
   ## @param extraDeploy Extra objects to deploy (evaluated as a template)
   ##
   extraDeploy: []
 
 common:
-  nameOverride: account
+  nameOverride: missioncontrol
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
       port: httpprivate
   service:
-    enabled: true
     ports:
       http: 8080
       httpprivate: 8081
@@ -29,10 +35,10 @@ common:
         port: 8081
         targetPort: http
 
-## @param nameOverride String to partially override account.fullname include (will maintain the release name)
+## @param nameOverride String to partially override filex.fullname include (will maintain the release name)
 ##
 nameOverride: ""
-## @param fullnameOverride String to fully override account.fullname template
+## @param fullnameOverride String to fully override filex.fullname template
 ##
 fullnameOverride: ""
 ## @param commonAnnotations Annotations to add to all deployed objects
@@ -57,7 +63,7 @@ ingress:
   apiVersion: ""
   ## @param ingress.hostname Default host for the ingress record
   ##
-  hostname: account.local
+  hostname: missioncontrol.local
   ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
   ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
   ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
@@ -90,7 +96,7 @@ ingress:
   ## @param ingress.extraHosts An array with additional hostname(s) to be covered with the ingress record
   ## e.g:
   ## extraHosts:
-  ##   - name: account.local
+  ##   - name: missioncontrol.local
   ##     path: /
   ##
   extraHosts: []
@@ -108,8 +114,8 @@ ingress:
   ## e.g:
   ## extraTls:
   ## - hosts:
-  ##     - account.local
-  ##   secretName: account.local-tls
+  ##     - missioncontrol.local
+  ##   secretName: missioncontrol.local-tls
   ##
   extraTls: []
   ## @param ingress.secrets Custom TLS certificates as secrets
@@ -121,7 +127,7 @@ ingress:
   ## Please see README.md for more information
   ## e.g:
   ## secrets:
-  ##   - name: account.local-tls
+  ##   - name: missioncontrol.local-tls
   ##     key: |-
   ##       -----BEGIN RSA PRIVATE KEY-----
   ##       ...
@@ -183,8 +189,8 @@ volumePermissions:
 ##
 image:
   registry: docker.xenoss.io
-  repository: "xenoss-account"
-  tag: 18.9.10.0-admin_org-653
+  repository: "xenoss-missioncontrol"
+  tag: "XXX"
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -224,22 +230,25 @@ extraEnvVarsCM: ""
 ##
 extraEnvVarsSecret: ""
 
-## @param replicaCount Number of Account replicas to deploy
+## @param replicaCount Number of MissionControl replicas to deploy
 ##
 replicaCount: 1
 
-## @param extraVolumes [array] Optionally specify extra list of additional volumes for Account pods
-##
-extraVolumes: []
-## @param extraVolumeMounts [array] Optionally specify extra list of additional volumeMounts for Account container(s)
-##
-extraVolumeMounts: []
+extraVolumes:
+  - name: exchanges-yaml
+    configMap:
+      name: exchanges.yaml
 
-## @param podLabels [object] Extra labels for Account pods
+extraVolumeMounts:
+  - name: exchanges-yaml
+    mountPath: /opt/xenoss-missioncontrol/conf/exchanges.yaml
+    subPath: exchanges.yaml
+
+## @param podLabels [object] Extra labels for MissionControl pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
 podLabels: {}
-## @param podAnnotations [object] Annotations for Account pods
+## @param podAnnotations [object] Annotations for MissionControl pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
@@ -283,7 +292,7 @@ resources:
 ##
 containerPorts:
   http: 8080
-  httpprivate: 8081
+  private: 8081
 ## @param extraContainerPorts [array] Array with extra container ports to add to the Account container
 ## e.g:
 ## extraContainerPorts:
@@ -345,24 +354,9 @@ logback_xml: |
     </root>
   </configuration>
 
-init:
-  admin:
-    DEFAULT_SYSTEM_ADMIN_EMAIL: "xenoss@xenoss.io"
-    DEFAULT_SYSTEM_ADMIN_PASSWORD: Xenoss123
-    DEFAULT_SYSTEM_ADMIN_FIRST_NAME: System
-    DEFAULT_SYSTEM_ADMIN_LAST_NAME: Admin
-    DEFAULT_SYSTEM_ADMIN_ROLES:
-      DFLT: ADMIN
-      SYSTEM: ADMIN
-    DEFAULT_SYSTEM_ADMIN_READ_ONLY: true
-  organization:
-    DEFAULT_ORGANIZATION_ID: DFLT
-    DEFAULT_ORGANIZATION_NAME: Default
-    DEFAULT_ORGANIZATION_DESCRIPTION: Default organization
-    DEFAULT_ORGANIZATION_READ_ONLY: true
-
 
   ## @param init.existingSecret Existing secret with Account default credentials
   ## NOTE: When it's set the previous parameters are ignored.
   ##
   existingSecret: ""
+

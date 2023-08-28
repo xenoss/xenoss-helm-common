@@ -23,6 +23,22 @@ common:
     serviceMonitor:
       enabled: true
       port: httpprivate
+  service:
+    enabled: true
+    ports:
+      http: 8080
+      httpprivate: 8081
+    ## Node ports to expose
+    nodePorts:
+      http: ""
+      httpprivate: ""
+    extraPorts:
+      - name: http
+        port: 8080
+        targetPort: http
+      - name: httpprivate
+        port: 8081
+        targetPort: http
 
 ## @param nameOverride String to partially override filex.fullname include (will maintain the release name)
 ##
@@ -49,65 +65,6 @@ serviceAccount:
   name: ""
   automountServiceAccountToken: true
   annotations: {}
-
-## FileX service parameters
-##
-service:
-  ## @param service.type FileX Service type
-  ##
-  type: ClusterIP
-  ports:
-    http: 8080
-    httpprivate: 8081
-  ## Node ports to expose
-  nodePorts:
-    http: ""
-    httpprivate: ""
-  ## @param service.clusterIP FileX service Cluster IP
-  ## e.g.:
-  ## clusterIP: None
-  ##
-  clusterIP: ""
-  ## @param service.loadBalancerIP FileX service Load Balancer IP
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
-  ##
-  loadBalancerIP: ""
-  ## @param service.loadBalancerSourceRanges FileX service Load Balancer sources
-  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
-  ## e.g:
-  ## loadBalancerSourceRanges:
-  ##   - 10.10.10.0/24
-  ##
-  loadBalancerSourceRanges: []
-  ## @param service.annotations Additional custom annotations for FileX service
-  ## This can be used to set the LoadBalancer service type to internal only.
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
-  ##
-  annotations: {}
-  ## @param service.externalTrafficPolicy FileX service external traffic policy
-  ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-  ##
-  externalTrafficPolicy: Cluster
-  ## @param service.extraPorts Extra ports to expose (normally used with the `sidecar` value)
-  ##
-  extraPorts:
-    - name: http
-      port: 8080
-      targetPort: http
-    - name: httpprivate
-      port: 8081
-      targetPort: http
-  ## @param service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
-  ## If "ClientIP", consecutive client requests will be directed to the same mongos Pod
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-  ##
-  sessionAffinity: None
-  ## @param service.sessionAffinityConfig Additional settings for the sessionAffinity
-  ## sessionAffinityConfig:
-  ##   clientIP:
-  ##     timeoutSeconds: 300
-  ##
-  sessionAffinityConfig: {}
 
 ## 'volumePermissions' init container parameters
 ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
