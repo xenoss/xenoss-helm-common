@@ -87,11 +87,11 @@ spec:
           {{- end }}
           volumeMounts:
             - name: {{ include "common.fullname" . }}
-              mountPath: /opt/xenoss-account/conf/vm.options
+              mountPath: /opt/xenoss-missioncontrol/conf/vm.options
               subPath: vm.options
               readOnly: true
             - name: {{ include "common.fullname" . }}
-              mountPath: /opt/xenoss-account/conf/logback.xml
+              mountPath: /opt/xenoss-missioncontrol/conf/logback.xml
               subPath: logback.xml
               readOnly: true
             {{- if .Values.extraVolumeMounts }}
