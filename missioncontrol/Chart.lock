@@ -1,6 +1,0 @@
-dependencies:
-- name: common
-  repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
-  version: 1.0.2
-digest: sha256:02d7d49582ad16a27f81a090553f339d93353101aa380a308739ff7b3a81a163
-generated: "2023-08-28T20:33:32.4492977+03:00"

@@ -1,10 +1,16 @@
 global:
   hosts:
-    mongo: "<change me>"
-    account: "<change me>"
+    memcached: "<change me>"
+    missioncontrol: "<change me>"
   exchanges:
     configmap:
       name: ""
+  datamodel:
+    configmap:
+      name: ""
+    location: /opt/xenoss-bidder/conf/datamodel
+  pools:
+    requestWorkers: 100
   jvm:
     options: |
       -Xmx800M
@@ -38,10 +44,9 @@ global:
         </root>
       </configuration>
 
-  statefulset:
-    replicaCount: 1
+  daemonset:
     enabled: true
-  nameOverride: missioncontrol
+  nameOverride: bidder
   fullnameOverride: ""
   commonAnnotations: {}
   commonLabels: {}
@@ -55,28 +60,12 @@ global:
     serviceMonitor:
       enabled: true
       port: httpprivate
-
   service:
-    enabled: true
-    clusterIP: None
-    ports:
-      http: 8080
-      httpprivate: 8081
-    ## Node ports to expose
-    nodePorts:
-      http: ""
-      httpprivate: ""
-    extraPorts:
-      - name: http
-        port: 8080
-        targetPort: http
-      - name: httpprivate
-        port: 8081
-        targetPort: http
+    enabled: false
 
   image:
     registry: docker.xenoss.io
-    repository: "xenoss-missioncontrol"
+    repository: "xenoss-bidder"
     tag: "XXX"
     digest: ""
     pullPolicy: IfNotPresent
@@ -133,10 +122,14 @@ common:
   envVars:
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
-    - name: MONGO_HOST
-      value: "{{ .Values.global.hosts.mongo }}"
-    - name: HTTP_SECURITY_REMOTE
-      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
+    - name: REQUEST_WORKERS
+      value: "{{ .Values.global.pools.requestWorkers }}"
+    - name: DATAMODEL_LOCATION
+      value: "{{ .Values.global.datamodel.location }}"
+    - name: DUPLICATE_IMPRESSIONS_STORAGE_MEMCACHED_HOST
+      value: "{{ .Values.global.hosts.memcached }}"
+    - name: HTTP_MC_REMOTE
+      value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
   configMaps:
     default:
       enabled: true
@@ -144,21 +137,27 @@ common:
         vm.options: "{{ .Values.global.jvm.options }}"
         logback.xml: "{{ .Values.global.logs.configuration }}"
   volumes:
-    - name: "{{ include \"common.fullname\" $ }}"
-      configMap:
-        name: "{{ include \"common.fullname\" $ }}"
     - name: "{{ .Values.global.exchanges.configmap.name }}"
       configMap:
         name: "{{ .Values.global.exchanges.configmap.name }}"
-  volumeMounts:
+    - name: "{{ .Values.global.datamodel.configmap.name }}"
+      configMap:
+        name: "{{ .Values.global.datamodel.configmap.name }}"
     - name: "{{ include \"common.fullname\" $ }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/vm.options
+      configMap:
+        name: "{{ include \"common.fullname\" $ }}"
+  volumeMounts:
+    - name: "{{ .Values.global.exchanges.configmap.name }}"
+      mountPath: /opt/xenoss-bidder/conf/exchanges.yaml
+      subPath: exchanges.yaml
+    - name: "{{ .Values.global.datamodel.configmap.name }}"
+      mountPath: "{{ .Values.global.datamodel.location }}/config.v1.conf"
+      subPath: datamodel.conf
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /opt/xenoss-bidder/conf/vm.options
       subPath: vm.options
       readOnly: true
     - name: "{{ include \"common.fullname\" $ }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/logback.xml
+      mountPath: /opt/xenoss-bidder/conf/logback.xml
       subPath: logback.xml
       readOnly: true
-    - name: "{{ .Values.global.exchanges.configmap.name }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/exchanges.yaml
-      subPath: exchanges.yaml

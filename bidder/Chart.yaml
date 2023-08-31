@@ -7,7 +7,7 @@ dependencies:
     repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
     version: 1.x.x
 home: https://xenoss.com
-name: missioncontrol
+name: bidder
 sources:
   - https://github.com/xenoss/xenoss.dsp
 version: 0.0.1

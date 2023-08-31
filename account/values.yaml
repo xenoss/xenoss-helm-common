@@ -1,19 +1,99 @@
 global:
+  init:
+    admin:
+      DEFAULT_SYSTEM_ADMIN_EMAIL: "xenoss@xenoss.io"
+      DEFAULT_SYSTEM_ADMIN_PASSWORD: Xenoss123
+      DEFAULT_SYSTEM_ADMIN_FIRST_NAME: System
+      DEFAULT_SYSTEM_ADMIN_LAST_NAME: Admin
+      DEFAULT_SYSTEM_ADMIN_ROLES:
+        DFLT: ADMIN
+        SYSTEM: ADMIN
+      DEFAULT_SYSTEM_ADMIN_READ_ONLY: true
+    organization:
+      DEFAULT_ORGANIZATION_ID: DFLT
+      DEFAULT_ORGANIZATION_NAME: Default
+      DEFAULT_ORGANIZATION_DESCRIPTION: Default organization
+      DEFAULT_ORGANIZATION_READ_ONLY: true
+  hosts:
+    mongo: "<change me>"
+  jvm:
+    options: |
+      -Xmx128M
+      -Xss228k
+      -XX:+UseG1GC
+      -XX:+UseGCOverheadLimit
+      -XX:GCTimeLimit=90
+      -XX:-OmitStackTraceInFastThrow
+      -Dorg.quartz.scheduler.skipUpdateCheck=true
+      -Dsun.jnu.encoding=UTF-8
+      -Dfile.encoding=UTF-8
+  logs:
+    loglevel: DEBUG
+    configuration: |
+      <configuration scan="true">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            </encoder>
+        </appender>
+    
+        <logger name="org" level="ERROR"/>
+        <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
+        <logger name="io.undertow" level="WARN"/>
+        <logger name="oap.application.remote" level="WARN"/>
+        <logger name="javax.management" level="ERROR" />
+    
+        <root level="${APP_LOGGING_LEVEL:-DEBUG}">
+            <appender-ref ref="STDOUT"/>
+        </root>
+      </configuration>
+
+  statefulset:
+    enabled: true
+    replicaCount: 1
+  nameOverride: account
+  fullnameOverride: ""
+  commonAnnotations: {}
+  commonLabels: {}
+
+  containerPorts:
+    http: 8080
+    private: 8081
+  extraContainerPorts:
+    - name: http
+      containerPort: 8080
+    - name: httpprivate
+      containerPort: 8081
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true
+
   imageRegistry: ""
   imagePullSecrets: []
-  ## @param extraDeploy Extra objects to deploy (evaluated as a template)
-  ##
   extraDeploy: []
 
-common:
-  nameOverride: account
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
       port: httpprivate
+  image:
+    registry: docker.xenoss.io
+    repository: "xenoss-account"
+    tag: "XXX"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    ##   - myRegistryKeySecretName
+    loglevel: DEBUG
+
   service:
     enabled: true
+    clusterIP: None
     ports:
       http: 8080
       httpprivate: 8081
@@ -29,340 +109,46 @@ common:
         port: 8081
         targetPort: http
 
-## @param nameOverride String to partially override account.fullname include (will maintain the release name)
-##
-nameOverride: ""
-## @param fullnameOverride String to fully override account.fullname template
-##
-fullnameOverride: ""
-## @param commonAnnotations Annotations to add to all deployed objects
-##
-commonAnnotations: {}
-## @param commonLabels Labels to add to all deployed objects
-##
-commonLabels: {}
+common:
+  envVars:
+    - name: APP_LOGGING_LEVEL
+      value: "{{ .Values.global.logs.loglevel }}"
+    - name: MONGO_HOST
+      value: "{{ .Values.global.hosts.mongo }}"
+  envVarsSecret:
+    - account-init-auth-org
+  configMaps:
+    default:
+      enabled: true
+      files:
+        vm.options: "{{ .Values.global.jvm.options }}"
+        logback.xml: "{{ .Values.global.logs.configuration }}"
+  secretMaps:
+    account-init-auth-org:
+      enabled: true
+      values:
+        DEFAULT_SYSTEM_ADMIN_EMAIL: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_EMAIL }}"
+        DEFAULT_SYSTEM_ADMIN_PASSWORD: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_PASSWORD }}"
+        DEFAULT_SYSTEM_ADMIN_FIRST_NAME: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_FIRST_NAME }}"
+        DEFAULT_SYSTEM_ADMIN_LAST_NAME: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_LAST_NAME }}"
+        DEFAULT_SYSTEM_ADMIN_ROLES: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_ROLES | toJson }}"
+        DEFAULT_SYSTEM_ADMIN_READ_ONLY: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_READ_ONLY | toString }}"
 
-## Account ingress parameters
-## ref: http://kubernetes.io/docs/user-guide/ingress/
-##
-ingress:
-  ## @param ingress.enabled Enable ingress record generation for Account
-  ##
-  enabled: false
-  ## @param ingress.pathType Ingress path type
-  ##
-  pathType: ImplementationSpecific
-  ## @param ingress.apiVersion Force Ingress API version (automatically detected if not set)
-  ##
-  apiVersion: ""
-  ## @param ingress.hostname Default host for the ingress record
-  ##
-  hostname: account.local
-  ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
-  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
-  ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
-  ##
-  ingressClassName: ""
-  ## @param ingress.path Default path for the ingress record
-  ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
-  ##
-  path: /
-  ## @param ingress.annotations Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
-  ## Use this parameter to set the required annotations for cert-manager, see
-  ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
-  ## e.g:
-  ## annotations:
-  ##   kubernetes.io/ingress.class: nginx
-  ##   cert-manager.io/cluster-issuer: cluster-issuer-name
-  ##
-  annotations: {}
-  ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hostname` parameter
-  ## TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.ingress.hostname }}`
-  ## You can:
-  ##   - Use the `ingress.secrets` parameter to create this TLS secret
-  ##   - Rely on cert-manager to create it by setting the corresponding annotations
-  ##   - Rely on Helm to create self-signed certificates by setting `ingress.selfSigned=true`
-  ##
-  tls: false
-  ## @param ingress.selfSigned Create a TLS secret for this ingress record using self-signed certificates generated by Helm
-  ##
-  selfSigned: false
-  ## @param ingress.extraHosts An array with additional hostname(s) to be covered with the ingress record
-  ## e.g:
-  ## extraHosts:
-  ##   - name: account.local
-  ##     path: /
-  ##
-  extraHosts: []
-  ## @param ingress.extraPaths An array with additional arbitrary paths that may need to be added to the ingress under the main host
-  ## e.g:
-  ## extraPaths:
-  ## - path: /*
-  ##   backend:
-  ##     serviceName: ssl-redirect
-  ##     servicePort: use-annotation
-  ##
-  extraPaths: []
-  ## @param ingress.extraTls TLS configuration for additional hostname(s) to be covered with this ingress record
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-  ## e.g:
-  ## extraTls:
-  ## - hosts:
-  ##     - account.local
-  ##   secretName: account.local-tls
-  ##
-  extraTls: []
-  ## @param ingress.secrets Custom TLS certificates as secrets
-  ## NOTE: 'key' and 'certificate' are expected in PEM format
-  ## NOTE: 'name' should line up with a 'secretName' set further up
-  ## If it is not set and you're using cert-manager, this is unneeded, as it will create a secret for you with valid certificates
-  ## If it is not set and you're NOT using cert-manager either, self-signed certificates will be created valid for 365 days
-  ## It is also possible to create and manage the certificates outside of this helm chart
-  ## Please see README.md for more information
-  ## e.g:
-  ## secrets:
-  ##   - name: account.local-tls
-  ##     key: |-
-  ##       -----BEGIN RSA PRIVATE KEY-----
-  ##       ...
-  ##       -----END RSA PRIVATE KEY-----
-  ##     certificate: |-
-  ##       -----BEGIN CERTIFICATE-----
-  ##       ...
-  ##       -----END CERTIFICATE-----
-  ##
-  secrets: []
-  ## @param ingress.extraRules Additional rules to be covered with this ingress record
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
-  ## e.g:
-  ## extraRules:
-  ## - host: example.local
-  ##     http:
-  ##       path: /
-  ##       backend:
-  ##         service:
-  ##           name: example-svc
-  ##           port:
-  ##             name: http
-  ##
-  extraRules: []
+        DEFAULT_ORGANIZATION_ID: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_ID }}"
+        DEFAULT_ORGANIZATION_NAME: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_NAME }}"
+        DEFAULT_ORGANIZATION_DESCRIPTION: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_DESCRIPTION }}"
+        DEFAULT_ORGANIZATION_READ_ONLY: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_READ_ONLY | toString }}"
 
-## Pods Service Account
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-## @param serviceAccount.create Specifies whether a ServiceAccount should be created
-## @param serviceAccount.name Name of the service account to use. If not set and create is true, a name is generated using the fullname template.
-## @param serviceAccount.automountServiceAccountToken Automount service account token for the server service account
-## @param serviceAccount.annotations Annotations for service account. Evaluated as a template. Only used if `create` is `true`.
-##
-serviceAccount:
-  create: true
-  name: ""
-  automountServiceAccountToken: true
-  annotations: {}
-
-## 'volumePermissions' init container parameters
-## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
-##   based on the podSecurityContext/containerSecurityContext parameters
-##
-volumePermissions:
-  ## @param volumePermissions.enabled Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`
-  ##
-  enabled: false
-
-## @section Account Image parameters
-
-## Xenoss Account image
-## ref: https://hub.docker.com/r/bitnami/redis/tags/
-## @param image.registry Account image registry
-## @param image.repository Account image repository
-## @param image.tag Account image tag (immutable tags are recommended)
-## @param image.digest Account image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-## @param image.pullPolicy Account image pull policy
-## @param image.pullSecrets [array] Account image pull secrets
-## @param image.debug Enable image debug mode
-##
-image:
-  registry: docker.xenoss.io
-  repository: "xenoss-account"
-  tag: 18.9.10.0-admin_org-653
-  digest: ""
-  ## Specify a imagePullPolicy
-  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-  ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
-  pullPolicy: IfNotPresent
-  ## Optionally specify an array of imagePullSecrets.
-  ## Secrets must be manually created in the namespace.
-  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-  ## e.g:
-  ## pullSecrets:
-  ##   - myRegistryKeySecretName
-  ##
-  pullSecrets: []
-  loglevel: DEBUG
-
-## @param command [array] Override default container command (useful when using custom images)
-##
-command: []
-## @param args [array] Override default container args (useful when using custom images)
-##
-args: []
-## @param lifecycleHooks for the container to automate configuration before or after startup
-##
-lifecycleHooks: {}
-## @param extraEnvVars [array] Array with extra environment variables to add to the Account container
-## e.g:
-## extraEnvVars:
-##   - name: FOO
-##     value: "bar"
-##
-extraEnvVars: []
-## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
-##
-extraEnvVarsCM: ""
-## @param extraEnvVarsSecret Name of existing Secret containing extra env vars
-##
-extraEnvVarsSecret: ""
-
-## @param replicaCount Number of Account replicas to deploy
-##
-replicaCount: 1
-
-## @param extraVolumes [array] Optionally specify extra list of additional volumes for Account pods
-##
-extraVolumes: []
-## @param extraVolumeMounts [array] Optionally specify extra list of additional volumeMounts for Account container(s)
-##
-extraVolumeMounts: []
-
-## @param podLabels [object] Extra labels for Account pods
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-##
-podLabels: {}
-## @param podAnnotations [object] Annotations for Account pods
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
-podAnnotations: {}
-## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
-## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-##
-podAffinityPreset: ""
-## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
-## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
-##
-podAntiAffinityPreset: soft
-## @param nodeSelector [object] Node labels for pod assignment
-## ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
-nodeSelector: {}
-## @param updateStrategy.type Account statefulset strategy type
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
-##
-updateStrategy:
-  ## StrategyType
-  ## Can be set to RollingUpdate or OnDelete
-  ##
-  type: RollingUpdate
-
-## @param podManagementPolicy Statefulset Pod management policy, it needs to be Parallel to be able to complete the cluster join
-## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
-##
-podManagementPolicy: Parallel
-
-## Account containers' resource requests and limits
-## ref: https://kubernetes.io/docs/user-guide/compute-resources/
-## @param resources.limits [object] The resources limits for the Account container
-## @param resources.requests [object] The requested resources for the Account container
-##
-resources:
-  limits: {}
-  requests:
-    memory: 256Mi
-    cpu: 300m
-## Container ports
-##
-containerPorts:
-  http: 8080
-  httpprivate: 8081
-## @param extraContainerPorts [array] Array with extra container ports to add to the Account container
-## e.g:
-## extraContainerPorts:
-##   - name: additional-port
-##     value: 8888
-##
-extraContainerPorts:
-  - name: http
-    containerPort: 8080
-  - name: httpprivate
-    containerPort: 8081
-## Configure Pods Security Context
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
-## @param podSecurityContext.enabled Enabled Account pods' Security Context
-## @param podSecurityContext.fsGroup Set Account pod's Security Context fsGroup
-##
-podSecurityContext:
-  enabled: true
-  fsGroup: 1001
-## Configure Container Security Context
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
-## @param containerSecurityContext.enabled Enabled Apache Server containers' Security Context
-## @param containerSecurityContext.runAsUser Set Apache Server containers' Security Context runAsUser
-## @param containerSecurityContext.runAsNonRoot Set Controller container's Security Context runAsNonRoot
-##
-containerSecurityContext:
-  enabled: true
-  runAsUser: 1001
-  runAsNonRoot: true
-
-mongo_host: mongodb
-
-vm_options: |
-  -Xmx128M
-  -Xss228k
-  -XX:+UseG1GC
-  -XX:+UseGCOverheadLimit
-  -XX:GCTimeLimit=90
-  -XX:-OmitStackTraceInFastThrow
-  -Dorg.quartz.scheduler.skipUpdateCheck=true
-  -Dsun.jnu.encoding=UTF-8
-  -Dfile.encoding=UTF-8
-
-logback_xml: |
-  <configuration scan="true">
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <logger name="org" level="ERROR"/>
-    <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
-    <logger name="oap.application.remote" level="WARN"/>
-    <logger name="javax.management" level="ERROR" />
-
-    <root level="${APP_LOGGING_LEVEL:-DEBUG}">
-        <appender-ref ref="STDOUT"/>
-    </root>
-  </configuration>
-
-init:
-  admin:
-    DEFAULT_SYSTEM_ADMIN_EMAIL: "xenoss@xenoss.io"
-    DEFAULT_SYSTEM_ADMIN_PASSWORD: Xenoss123
-    DEFAULT_SYSTEM_ADMIN_FIRST_NAME: System
-    DEFAULT_SYSTEM_ADMIN_LAST_NAME: Admin
-    DEFAULT_SYSTEM_ADMIN_ROLES:
-      DFLT: ADMIN
-      SYSTEM: ADMIN
-    DEFAULT_SYSTEM_ADMIN_READ_ONLY: true
-  organization:
-    DEFAULT_ORGANIZATION_ID: DFLT
-    DEFAULT_ORGANIZATION_NAME: Default
-    DEFAULT_ORGANIZATION_DESCRIPTION: Default organization
-    DEFAULT_ORGANIZATION_READ_ONLY: true
-
-
-  ## @param init.existingSecret Existing secret with Account default credentials
-  ## NOTE: When it's set the previous parameters are ignored.
-  ##
-  existingSecret: ""
+  volumes:
+    - name: "{{ include \"common.fullname\" $ }}"
+      configMap:
+        name: "{{ include \"common.fullname\" $ }}"
+  volumeMounts:
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: "/opt/xenoss-account/conf/vm.options"
+      subPath: vm.options
+      readOnly: true
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /opt/xenoss-account/conf/logback.xml
+      subPath: logback.xml
+      readOnly: true
