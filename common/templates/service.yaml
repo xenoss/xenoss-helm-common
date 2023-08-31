@@ -1,45 +1,41 @@
-{{- if .Values.service.enabled }}
+{{- if .Values.global.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.fullname.service" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels: {{- include "common.labels" . | nindent 4 }}
-    {{- if .Values.commonLabels }}
-    {{- tpl ( .Values.commonLabels | toYaml ) $ | nindent 4 }}
+    {{- if .Values.global.commonLabels }}
+    {{- tpl ( .Values.global.commonLabels | toYaml ) $ | nindent 4 }}
     {{- end }}
-  {{- if or .Values.service.annotations .Values.commonAnnotations }}
+  {{- if or .Values.service.annotations .Values.global.service.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
+    {{ $annotations := merge (dict) .Values.service.annotations .Values.global.service.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
   annotations:
-    {{- if .Values.service.annotations }}
-    {{- tpl ( .Values.service.annotations | toYaml ) $ | nindent 4 }}
-    {{- end }}
-    {{- if .Values.commonAnnotations }}
-    {{- tpl ( .Values.commonAnnotations | toYaml ) $ | nindent 4 }}
-    {{- end }}
+    {{- tpl ( $annotations | toYaml ) $ | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  {{- if and .Values.service.clusterIP (eq .Values.service.type "ClusterIP") }}
-  clusterIP: {{ .Values.service.clusterIP }}
+  type: {{ .Values.global.service.type }}
+  {{- if and .Values.global.service.clusterIP (eq .Values.global.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.global.service.clusterIP }}
   {{- end }}
-  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  {{- if (or (eq .Values.global.service.type "LoadBalancer") (eq .Values.global.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.global.service.externalTrafficPolicy | quote }}
   {{- end }}
-  {{ if eq .Values.service.type "LoadBalancer" }}
-  loadBalancerSourceRanges: {{ .Values.service.loadBalancerSourceRanges }}
+  {{ if eq .Values.global.service.type "LoadBalancer" }}
+  loadBalancerSourceRanges: {{ .Values.global.service.loadBalancerSourceRanges }}
   {{ end }}
-  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- if (and (eq .Values.global.service.type "LoadBalancer") (not (empty .Values.global.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.global.service.loadBalancerIP }}
   {{- end }}
-  {{- if .Values.service.sessionAffinity }}
-  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  {{- if .Values.global.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.global.service.sessionAffinity }}
   {{- end }}
-  {{- if .Values.service.sessionAffinityConfig }}
-  sessionAffinityConfig: {{- tpl ( .Values.service.sessionAffinityConfig | toYaml ) $ | nindent 4 }}
+  {{- if .Values.global.service.sessionAffinityConfig }}
+  sessionAffinityConfig: {{- tpl ( .Values.global.service.sessionAffinityConfig | toYaml ) $ | nindent 4 }}
   {{- end }}
-  {{- if .Values.service.extraPorts }}
+  {{- if .Values.global.service.extraPorts }}
   ports:
-    {{- tpl ( .Values.service.extraPorts | toYaml ) $ | nindent 4 }}
+    {{- tpl ( .Values.global.service.extraPorts | toYaml ) $ | nindent 4 }}
   {{- end }}
   selector: {{- include "common.matchLabels" . | nindent 4 }}
 {{- end }}

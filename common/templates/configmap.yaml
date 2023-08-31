@@ -1,0 +1,28 @@
+{{- $root := . -}}
+{{- $configMaps := merge (dict) .Values.configMaps .Values.global.configMaps }}
+{{- range $name, $config := $configMaps -}}
+{{- if $config.enabled }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ if eq $name "default" }}{{ include "common.fullname" $ }}{{ else }}{{ $name }}{{ end }}
+  namespace: {{ include "common.namespace" $root | quote }}
+  labels: {{- include "common.labels" $root | nindent 4 }}
+    {{- if $root.Values.global.commonLabels }}
+    {{- tpl ( $root.Values.global.commonLabels | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  {{- if or .annotation $.Values.commonAnnotations $.Values.global.commonAnnotations }}
+    {{ $annotations := merge (dict) .annotation $.Values.commonAnnotations $.Values.global.commonAnnotations }}
+  annotations:
+    {{- tpl ( $annotations | toYaml ) $ | nindent 4 }}
+  {{- end }}
+data:
+{{- range $key, $value := $config.files }}
+  {{ $key }}: |
+{{ tpl $value $ | indent 4 }}
+{{- end }}
+
+{{- end }}
+{{- end -}}

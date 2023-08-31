@@ -5,7 +5,7 @@ Params:
 */}}
 {{- define "common.ingress.backend" -}}
 service:
-  name: {{ include "common.fullname" .context }}
+  name: {{ include "common.fullname.service" .context }}
   port:
     {{- if typeIs "string" .servicePort }}
     name: {{ .servicePort }}

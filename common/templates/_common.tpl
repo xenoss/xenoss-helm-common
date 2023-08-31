@@ -1,5 +1,5 @@
 {{- define "common.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.global.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "common.chart" -}}
@@ -7,10 +7,10 @@
 {{- end -}}
 
 {{- define "common.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.global.fullnameOverride -}}
+{{- .Values.global.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- $name := default .Chart.Name .Values.global.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -19,8 +19,12 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "common.fullname.service" -}}
+{{- include "common.fullname" . }}{{ if eq $.Values.global.service.clusterIP "None" }}-headless{{ end }}
+{{- end -}}
+
 {{- define "common.namespace" -}}
-{{- default .Release.Namespace .Values.namespaceOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Release.Namespace .Values.global.namespaceOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "common.labels" -}}
@@ -36,18 +40,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "common.image" -}}
-{{- $registryName := .Values.image.registry -}}
-{{- $repositoryName := .Values.image.repository -}}
+{{- $registryName := .Values.global.image.registry -}}
+{{- $repositoryName := .Values.global.image.repository -}}
 {{- $separator := ":" -}}
-{{- $termination := .Values.image.tag | toString -}}
-{{- if .Values.global }}
-    {{- if .Values.global.imageRegistry }}
-     {{- $registryName = .Values.global.imageRegistry -}}
-    {{- end -}}
-{{- end -}}
-{{- if .Values.image.digest }}
+{{- $termination := .Values.global.image.tag | toString -}}
+{{- if .Values.global.image.digest }}
     {{- $separator = "@" -}}
-    {{- $termination = .Values.image.digest | toString -}}
+    {{- $termination = .Values.global.image.digest | toString -}}
 {{- end -}}
 {{- if $registryName }}
     {{- printf "%s/%s%s%s" $registryName $repositoryName $separator $termination -}}
@@ -59,17 +58,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "common.pullSecrets" -}}
   {{- $pullSecrets := list }}
 
-  {{- if .Values.global }}
-    {{- range .Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets . -}}
-    {{- end -}}
-  {{- end -}}
-
-  {{- range .Values.volumePermissions.image -}}
-    {{- range .pullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets . -}}
-    {{- end -}}
-  {{- end -}}
+{{- range .Values.imagePullSecrets -}}
+  {{- $pullSecrets = append $pullSecrets . -}}
+{{- end -}}
+{{- range .Values.global.imagePullSecrets -}}
+  {{- $pullSecrets = append $pullSecrets . -}}
+{{- end -}}
 
   {{- if (not (empty $pullSecrets)) }}
 imagePullSecrets:
@@ -77,4 +71,31 @@ imagePullSecrets:
   - name: {{ . }}
     {{- end }}
   {{- end }}
+{{- end -}}
+
+
+{{- define "common.podAnnotations" -}}
+      {{- if or .Values.podAnnotations .Values.global.podAnnotations .Values.configMaps .Values.global.configMaps }}
+      {{- $podAnnotations := merge (dict) .Values.podAnnotations .Values.global.podAnnotations }}
+      {{- $configMaps := merge (dict) .Values.configMaps .Values.global.configMaps }}
+      annotations:
+        {{- if $configMaps }}
+          {{- range $key,$conf := $configMaps }}
+            {{- range $file,$con := $conf.files }}
+        checksum/{{ $file }}: {{ tpl $con $ | sha256sum }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- if $podAnnotations }}
+        {{- tpl ( $podAnnotations | toYaml ) $ | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end -}}
+
+{{- define "common.volumesMounts" -}}
+  {{- $volumeMounts := .VolumeMounts }}
+  {{- range $volumeMount := $volumeMounts }}
+    {{- $_ := set $volumeMount "name" ( regexReplaceAll "\\W+" ( tpl $volumeMount.name $.Root ) "-" )  }}
+  {{- end }}
+{{- tpl ( $volumeMounts | toYaml ) $.Root | nindent 12 }}
 {{- end -}}

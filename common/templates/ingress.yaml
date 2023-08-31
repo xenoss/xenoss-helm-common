@@ -1,0 +1,56 @@
+{{- if .Values.global.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels" . | nindent 4 }}
+    {{- if .Values.global.commonLabels }}
+    {{- tpl ( .Values.global.commonLabels | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if .Values.global.ingress.annotations }}
+    {{- tpl ( .Values.global.ingress.annotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+    {{- if .Values.global.commonAnnotations }}
+    {{- tpl ( .Values.global.commonAnnotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.global.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.global.ingress.ingressClassName | quote }}
+  {{- end }}
+  rules:
+    {{- if .Values.global.ingress.hostname }}
+    - host: {{ .Values.global.ingress.hostname | quote }}
+      http:
+        paths:
+          {{- if .Values.global.ingress.extraPaths }}
+          {{- toYaml .Values.global.ingress.extraPaths | nindent 10 }}
+          {{- end }}
+          - path: {{ .Values.global.ingress.path }}
+            pathType: {{ .Values.global.ingress.pathType }}
+            backend: {{- include "common.ingress.backend" (dict "servicePort" "http" "context" $)  | nindent 14 }}
+    {{- end }}
+    {{- range .Values.global.ingress.extraHosts }}
+    - host: {{ .name | quote }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            pathType: {{ default "ImplementationSpecific" .pathType }}
+            backend: {{- include "common.ingress.backend" (dict "servicePort" "http" "context" $) | nindent 14 }}
+    {{- end }}
+    {{- if .Values.global.ingress.extraRules }}
+    {{- tpl ( .Values.global.ingress.extraRules | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.global.ingress.tls .Values.global.ingress.extraTls }}
+  tls:
+    {{- if and .Values.global.ingress.tls .Values.global.ingress.selfSigned }}
+    - hosts:
+        - {{ .Values.global.ingress.hostname | quote }}
+      secretName: {{ printf "%s-tls" .Values.global.ingress.hostname }}
+    {{- end }}
+    {{- if .Values.global.ingress.extraTls }}
+    {{- tpl ( .Values.global.ingress.extraTls | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end }}
