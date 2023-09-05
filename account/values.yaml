@@ -56,10 +56,7 @@ global:
   commonAnnotations: {}
   commonLabels: {}
 
-  containerPorts:
-    http: 8080
-    private: 8081
-  extraContainerPorts:
+  ontainerPorts:
     - name: http
       containerPort: 8080
     - name: httpprivate
