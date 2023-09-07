@@ -99,3 +99,13 @@ imagePullSecrets:
   {{- end }}
 {{- tpl ( $volumeMounts | toYaml ) $.Root | nindent 12 }}
 {{- end -}}
+
+{{- define "commmon.replicaCount" -}}
+  {{- if .Values.global.statefulset.enabled -}}
+     {{- .Values.global.statefulset.replicaCount -}}
+  {{- else if .Values.global.deployment.enabled -}}
+     {{- .Values.global.deployment.replicaCount -}}
+  {{- else -}}
+     1
+  {{- end -}}
+{{- end }}

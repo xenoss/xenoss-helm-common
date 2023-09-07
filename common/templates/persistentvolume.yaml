@@ -1,0 +1,39 @@
+{{- if and .Values.global.persistence.enabled ( eq .Values.global.persistence.volumeMode "Filesystem" ) }}
+{{- range until (include "commmon.replicaCount" . | int ) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-{{ template "common.fullname" $ }}-{{ . }}
+  namespace: {{ include "common.namespace" $ | quote }}
+  labels: {{- include "common.labels" $ | nindent 4 }}
+  {{- if or $.Values.global.persistence.annotations $.Values.commonAnnotations $.Values.global.commonAnnotations }}
+    {{ $annotations := merge (dict) $.Values.global.persistence.annotations $.Values.commonAnnotations $.Values.global.commonAnnotations }}
+  annotations:
+    {{- tpl ( $annotations | toYaml ) $ | nindent 4 }}
+  {{- end }}
+spec:
+  capacity:
+    storage: {{ $.Values.global.persistence.size }}
+  accessModes:
+  {{- range $.Values.global.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  local:
+    path: {{ $.Values.global.persistence.localpath }}
+  claimRef:
+    name: data-{{ template "common.fullname" $ }}-{{ . }}
+    namespace: {{ include "common.namespace" $ | quote }}
+  {{- if $.Values.global.nodeSelector }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+    {{- range $key, $value := $.Values.global.nodeSelector }}
+            - key: {{ tpl $key $  | quote }}
+              operator: In
+              values:
+                - {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

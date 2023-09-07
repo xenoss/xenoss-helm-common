@@ -65,12 +65,26 @@ global:
   #   values:
   #     password: "123"
   extraEnvVars: []
-    #  - name: key
+  #  - name: key
   #    value: value
   extraEnvVarsSecret: []
   #    - my-secret-name
   extraEnvVarsCM: []
   #    - my-configmap-name
+
+  persistence:
+    enabled: false
+    annotations: {}
+    localpath: "/tmp"
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+    volumeMode: ""
+    #    volumeMode: "Filesystem"
+    selector: {}
+    #      matchLabels:
+    #       app: my-app
+    existingVolume: ""
 
   ingress:
     enabled: false

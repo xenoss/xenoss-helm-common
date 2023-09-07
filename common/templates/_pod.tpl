@@ -12,9 +12,9 @@
                 name: {{ tpl . $ }}
             {{- end }}
           {{- end }}
-          {{- if .Values.global.containerPorts }}
+          {{- if .Values.global.extraContainerPorts }}
           ports:
-            {{- tpl ( .Values.global.containerPorts | toYaml ) $ | nindent 12 }}
+            {{- tpl ( .Values.global.extraContainerPorts | toYaml ) $ | nindent 12 }}
           {{- end }}
 
           {{- if .Values.global.resources }}
@@ -36,4 +36,30 @@
         {{- end }}
         {{- tpl ( $volumes | toYaml ) $ | nindent 8 }}
       {{- end }}
+
+  {{- if $.Values.global.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels: {{- include "common.labels" $ | nindent 10 }}
+    {{- if or .Values.global.persistence.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
+      {{ $annotations := merge (dict) .Values.global.persistence.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
+        annotations:
+       {{- tpl ( $annotations | toYaml ) $ | nindent 10 }}
+    {{- end }}
+      spec:
+        accessModes:
+        {{- range $.Values.global.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $.Values.global.persistence.size | quote }}
+        {{- if $.Values.global.persistence.volumeMode }}
+        volumeMode: {{ $.Values.global.persistence.volumeMode }}
+        {{- end }}
+        {{- if $.Values.global.persistence.selector }}
+        selector: {{- tpl $.Values.global.persistence.selector $ | toYaml | nindent 10 }}
+        {{- end }}
+  {{- end }}
 {{- end -}}
