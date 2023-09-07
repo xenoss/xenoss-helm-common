@@ -72,7 +72,7 @@ global:
         targetPort: http
       - name: httpprivate
         port: 8081
-        targetPort: http
+        targetPort: httpprivate
 
   image:
     registry: docker.xenoss.io
