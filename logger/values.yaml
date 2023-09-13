@@ -3,12 +3,11 @@ global:
     filex: <change me>
 
   storage:
-    s3:
-      enabled: true
-      configuration: |
-        fs.s3a.endpoint: s3aa://s3-website.us-east-1.amazonaws.com/test-bucket
-        fs.s3a.access.key: <access key>
-        fs.s3a.secret.key: <security key>
+    type: S3A
+    configuration:
+      fs.s3a.endpoint: s3a://s3-website.us-east-1.amazonaws.com/test-bucket
+      fs.s3a.access.key: <access key>
+      fs.s3a.secret.key: <security key>
 
   jvm:
     options: |
@@ -118,14 +117,14 @@ global:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-#  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
-#  podSecurityContext:
-#    enabled: true
-#    fsGroup: 1001
-#  containerSecurityContext:
-#    enabled: true
-#    runAsUser: 1001
-#    runAsNonRoot: true
+  #  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
+  #  podSecurityContext:
+  #    enabled: true
+  #    fsGroup: 1001
+  #  containerSecurityContext:
+  #    enabled: true
+  #    runAsUser: 1001
+  #    runAsNonRoot: true
 
 
   existingSecret: ""
@@ -150,9 +149,9 @@ common:
       value: /opt/xenoss-logger/logs
 
     - name: UPLOADER_HADOOP_FILESYSTEM_TYPE
-      value: S3A
+      value: "{{ .Values.global.storage.type }}"
     - name: UPLOADER_HADOOP_CONFIGURATION
-      value: json({{ .Values.global.storage.s3.configuration | fromYaml | toJson }})
+      value: json({{ .Values.global.storage.configuration | toJson }})
   configMaps:
     default:
       enabled: true
