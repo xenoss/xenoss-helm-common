@@ -57,7 +57,7 @@ global:
         </root>
       </configuration>
 
-  deployment:
+  statefulset:
     replicaCount: 1
     enabled: true
   nameOverride: uploader
