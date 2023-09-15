@@ -1,19 +1,19 @@
 global:
   init:
     admin:
-      DEFAULT_SYSTEM_ADMIN_EMAIL: "xenoss@xenoss.io"
-      DEFAULT_SYSTEM_ADMIN_PASSWORD: Xenoss123
-      DEFAULT_SYSTEM_ADMIN_FIRST_NAME: System
-      DEFAULT_SYSTEM_ADMIN_LAST_NAME: Admin
-      DEFAULT_SYSTEM_ADMIN_ROLES:
-        DFLT: ADMIN
-        SYSTEM: ADMIN
-      DEFAULT_SYSTEM_ADMIN_READ_ONLY: true
+      email: <change me>
+      password:
+        secret:
+          name: <secret name>
+      firstname: <change me>
+      lastname: <change me>
+      roles: {}
+      readonly: true
     organization:
-      DEFAULT_ORGANIZATION_ID: DFLT
-      DEFAULT_ORGANIZATION_NAME: Default
-      DEFAULT_ORGANIZATION_DESCRIPTION: Default organization
-      DEFAULT_ORGANIZATION_READ_ONLY: true
+      id: <change me>
+      name: <change me>
+      description: <change me>
+      readonly: true
   hosts:
     mongo: "<change me>"
   jvm:
@@ -112,29 +112,40 @@ common:
       value: "{{ .Values.global.logs.loglevel }}"
     - name: MONGO_HOST
       value: "{{ .Values.global.hosts.mongo }}"
-  envVarsSecret:
-    - account-init-auth-org
+
+    - name: DEFAULT_SYSTEM_ADMIN_EMAIL
+      value: "{{ .Values.global.init.admin.email }}"
+    - name: DEFAULT_SYSTEM_ADMIN_EMAIL
+      value: "{{ .Values.global.init.admin.email }}"
+    - name: DEFAULT_SYSTEM_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.global.init.admin.password.secret.name }}"
+          key: admin-password
+      value:
+    - name: DEFAULT_SYSTEM_ADMIN_FIRST_NAME
+      value: "{{ .Values.global.init.admin.firstname }}"
+    - name: DEFAULT_SYSTEM_ADMIN_LAST_NAME
+      value: "{{ .Values.global.init.admin.lastname }}"
+    - name: DEFAULT_SYSTEM_ADMIN_ROLES
+      value: "{{ .Values.global.init.admin.roles | toJson }}"
+    - name: DEFAULT_SYSTEM_ADMIN_READ_ONLY
+      value: "{{ .Values.global.init.admin.readonlu | toString }}"
+
+    - name: DEFAULT_ORGANIZATION_ID
+      value: "{{ .Values.global.init.organization.id }}"
+    - name: DEFAULT_ORGANIZATION_NAME
+      value: "{{ .Values.global.init.organization.name }}"
+    - name: DEFAULT_ORGANIZATION_DESCRIPTION
+      value: "{{ .Values.global.init.organization.description }}"
+    - name: DEFAULT_ORGANIZATION_READ_ONLY
+      value: "{{ .Values.global.init.organization.readonly | toString }}"
   configMaps:
     default:
       enabled: true
       files:
         vm.options: "{{ .Values.global.jvm.options }}"
         logback.xml: "{{ .Values.global.logs.configuration }}"
-  secretMaps:
-    account-init-auth-org:
-      enabled: true
-      values:
-        DEFAULT_SYSTEM_ADMIN_EMAIL: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_EMAIL }}"
-        DEFAULT_SYSTEM_ADMIN_PASSWORD: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_PASSWORD }}"
-        DEFAULT_SYSTEM_ADMIN_FIRST_NAME: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_FIRST_NAME }}"
-        DEFAULT_SYSTEM_ADMIN_LAST_NAME: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_LAST_NAME }}"
-        DEFAULT_SYSTEM_ADMIN_ROLES: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_ROLES | toJson }}"
-        DEFAULT_SYSTEM_ADMIN_READ_ONLY: "{{ .Values.global.init.admin.DEFAULT_SYSTEM_ADMIN_READ_ONLY | toString }}"
-
-        DEFAULT_ORGANIZATION_ID: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_ID }}"
-        DEFAULT_ORGANIZATION_NAME: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_NAME }}"
-        DEFAULT_ORGANIZATION_DESCRIPTION: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_DESCRIPTION }}"
-        DEFAULT_ORGANIZATION_READ_ONLY: "{{ .Values.global.init.organization.DEFAULT_ORGANIZATION_READ_ONLY | toString }}"
 
   volumes:
     - name: "{{ include \"common.fullname\" $ }}"
