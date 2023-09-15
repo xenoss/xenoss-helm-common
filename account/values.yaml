@@ -128,7 +128,7 @@ common:
     - name: DEFAULT_SYSTEM_ADMIN_LAST_NAME
       value: "{{ .Values.global.init.admin.lastname }}"
     - name: DEFAULT_SYSTEM_ADMIN_ROLES
-      value: "{{ .Values.global.init.admin.roles | toJson }}"
+      value: "json({{ .Values.global.init.admin.roles | toJson }})"
     - name: DEFAULT_SYSTEM_ADMIN_READ_ONLY
       value: "{{ .Values.global.init.admin.readonlu | toString }}"
 
