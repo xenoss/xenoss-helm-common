@@ -77,15 +77,7 @@ imagePullSecrets:
 {{- define "common.podAnnotations" -}}
       {{- if or .Values.podAnnotations .Values.global.podAnnotations .Values.configMaps .Values.global.configMaps }}
       {{- $podAnnotations := merge (dict) .Values.podAnnotations .Values.global.podAnnotations }}
-      {{- $configMaps := merge (dict) .Values.configMaps .Values.global.configMaps }}
       annotations:
-        {{- if $configMaps }}
-          {{- range $key,$conf := $configMaps }}
-            {{- range $file,$con := $conf.files }}
-        checksum/{{ $file }}: {{ tpl $con $ | sha256sum }}
-            {{- end }}
-          {{- end }}
-        {{- end }}
         {{- if $podAnnotations }}
         {{- tpl ( $podAnnotations | toYaml ) $ | nindent 8 }}
         {{- end }}
