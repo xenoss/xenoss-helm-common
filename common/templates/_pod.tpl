@@ -12,9 +12,10 @@
                 name: {{ tpl . $ }}
             {{- end }}
           {{- end }}
-          {{- if .Values.global.extraContainerPorts }}
+          {{- if .Values.global.containerPorts .Values.global.extraContainerPorts }}
+          {{- $containerPorts := concat (list) .Values.global.containerPorts .Values.global.extraContainerPorts }}
           ports:
-            {{- tpl ( .Values.global.extraContainerPorts | toYaml ) $ | nindent 12 }}
+            {{- tpl ( $containerPorts | toYaml ) $ | nindent 12 }}
           {{- end }}
 
           {{- if .Values.global.resources }}

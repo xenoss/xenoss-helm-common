@@ -96,11 +96,6 @@ global:
     requests:
       memory: 256Mi
       cpu: 300m
-  containerPorts:
-    - name: http
-      containerPort: 8080
-    - name: httpprivate
-      containerPort: 8081
   podSecurityContext:
     enabled: true
     fsGroup: 1001
@@ -116,6 +111,11 @@ global:
   configMaps: {}
 
 common:
+  containerPorts:
+    - name: http
+      containerPort: 8080
+    - name: httpprivate
+      containerPort: 8081
   envVars:
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"

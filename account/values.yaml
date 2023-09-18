@@ -56,11 +56,6 @@ global:
   commonAnnotations: {}
   commonLabels: {}
 
-  ontainerPorts:
-    - name: http
-      containerPort: 8080
-    - name: httpprivate
-      containerPort: 8081
   podSecurityContext:
     enabled: true
     fsGroup: 1001
@@ -107,6 +102,12 @@ global:
         targetPort: httpprivate
 
 common:
+  containerPorts:
+    - name: http
+      containerPort: 8080
+    - name: httpprivate
+      containerPort: 8081
+
   envVars:
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"

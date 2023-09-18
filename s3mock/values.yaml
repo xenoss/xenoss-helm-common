@@ -9,10 +9,6 @@ global:
   commonAnnotations: {}
   commonLabels: {}
 
-  containerPorts:
-    - name: http
-      containerPort: 9090
-
   imageRegistry: ""
   imagePullSecrets: []
   extraDeploy: []
@@ -42,6 +38,9 @@ global:
         targetPort: http
 
 common:
+  containerPorts:
+    - name: http
+      containerPort: 9090
   envVars:
     - name: initialBuckets
       value: "{{ join \",\" .Values.global.initialBuckets }}"

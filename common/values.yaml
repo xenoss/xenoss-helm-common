@@ -31,6 +31,12 @@ deployment:
 statefulset:
   annotations: {}
 
+containerPorts: []
+#  - name: http
+#    containerPort: 8080
+#  - name: httpprivate
+#    containerPort: 8081
+
 global:
   nameOverride: ""
   fullnameOverride: ""
@@ -71,6 +77,12 @@ global:
   #    - my-secret-name
   extraEnvVarsCM: []
   #    - my-configmap-name
+
+  extraContainerPorts: []
+#    - name: http
+#      containerPort: 8080
+#    - name: httpprivate
+#      containerPort: 8081
 
   persistence:
     enabled: false
