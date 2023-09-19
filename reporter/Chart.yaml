@@ -1,0 +1,13 @@
+annotations:
+  category: Infrastructure
+apiVersion: v2
+appVersion: 0.0.1
+dependencies:
+  - name: common
+    repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
+    version: 1.x.x
+home: https://xenoss.com
+name: reporter
+sources:
+  - https://github.com/xenoss/xenoss.reporting
+version: 0.0.1
