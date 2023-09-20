@@ -1,0 +1,167 @@
+global:
+  hosts:
+    mongo: <change me>
+    filex: <change me>
+
+  storage:
+    type: S3A
+    configuration:
+      fs.s3a.endpoint: s3aa://s3-website.us-east-1.amazonaws.com/test-bucket
+      fs.s3a.access.key: <access key>
+      fs.s3a.secret.key: <security key>
+
+  jvm:
+    options: |
+      -Xmx128M
+      -Xss228k
+      -XX:+UseG1GC
+      -XX:+UseGCOverheadLimit
+      -XX:GCTimeLimit=90
+      -XX:-OmitStackTraceInFastThrow
+      -Dorg.quartz.scheduler.skipUpdateCheck=true
+      -Dsun.jnu.encoding=UTF-8
+      -Dfile.encoding=UTF-8
+  logs:
+    loglevel: DEBUG
+    configuration: |
+      <configuration scan="true">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            </encoder>
+        </appender>
+      
+        <logger name="org" level="ERROR"/>
+        <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
+        <logger name="io.undertow" level="WARN"/>
+        <logger name="oap.application.remote" level="WARN"/>
+        <logger name="oap.concurrent" level="WARN"/>
+        <logger name="javax.management" level="ERROR" />
+        <logger name="net.rubyeye.xmemcached" level="WARN" />
+      
+        <root level="${APP_LOGGING_LEVEL:-DEBUG}">
+            <appender-ref ref="STDOUT"/>
+        </root>
+      </configuration>
+
+  statefulset:
+    replicaCount: 1
+    enabled: true
+  nameOverride: audience
+  fullnameOverride: ""
+  commonAnnotations: {}
+  commonLabels: {}
+
+  imageRegistry: ""
+  imagePullSecrets: []
+  extraDeploy: []
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      port: httpprivate
+
+  service:
+    enabled: true
+    clusterIP: None
+    ports:
+      http: 8080
+      httpprivate: 8081
+    ## Node ports to expose
+    nodePorts:
+      http: ""
+      httpprivate: ""
+    extraPorts:
+      - name: http
+        port: 8080
+        targetPort: http
+      - name: httpprivate
+        port: 8081
+        targetPort: httpprivate
+
+  image:
+    registry: docker.xenoss.io
+    repository: "xenoss-audience"
+    tag: "XXX"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    ##   - myRegistryKeySecretName
+    loglevel: DEBUG
+
+  command: []
+  args: []
+  lifecycleHooks: {}
+  ##   - name: FOO
+  ##     value: "bar"
+  extraEnvVarsCM: ""
+  extraEnvVarsSecret: ""
+
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeSelector: {}
+  updateStrategy:
+    type: RollingUpdate
+
+  podManagementPolicy: Parallel
+
+  resources:
+    limits: {}
+    requests:
+      memory: 256Mi
+      cpu: 300m
+#  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
+#  podSecurityContext:
+#    enabled: true
+#    fsGroup: 1001
+#  containerSecurityContext:
+#    enabled: true
+#    runAsUser: 1001
+#    runAsNonRoot: true
+
+
+  existingSecret: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+  configMaps: {}
+
+common:
+  containerPorts:
+    - name: http
+      containerPort: 8080
+    - name: httpprivate
+      containerPort: 8081
+  envVars:
+    - name: APP_LOGGING_LEVEL
+      value: "{{ .Values.global.logs.loglevel }}"
+    - name: MONGO_HOST
+      value: "{{ .Values.global.hosts.mongo }}"
+    - name: HTTP_FILEX_REMOTE
+      value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
+
+    - name: HADOOP_FILESYSTEM_TYPE
+      value: "{{ .Values.global.storage.type }}"
+    - name: HADOOP_CONFIGURATION
+      value: json({{ .Values.global.storage.configuration | toJson }})
+  configMaps:
+    default:
+      enabled: true
+      files:
+        vm.options: "{{ .Values.global.jvm.options }}"
+        logback.xml: "{{ .Values.global.logs.configuration }}"
+  volumes:
+    - name: "{{ include \"common.fullname\" $ }}"
+      configMap:
+        name: "{{ include \"common.fullname\" $ }}"
+  volumeMounts:
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /opt/xenoss-uploader/conf/vm.options
+      subPath: vm.options
+      readOnly: true
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /opt/xenoss-uploader/conf/logback.xml
+      subPath: logback.xml
+      readOnly: true
