@@ -1,4 +1,5 @@
 global:
+  selfRegistrationEnabled: false
   init:
     admin:
       email: <change me>
@@ -141,6 +142,9 @@ common:
       value: "{{ .Values.global.init.organization.description }}"
     - name: DEFAULT_ORGANIZATION_READ_ONLY
       value: "{{ .Values.global.init.organization.readonly | toString }}"
+
+    - name: SELF_REGISTRATION_ENABLED
+      value: "{{ .Values.global.selfRegistrationEnabled | toString }}"
   configMaps:
     default:
       enabled: true
