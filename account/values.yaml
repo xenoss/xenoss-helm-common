@@ -56,13 +56,13 @@ global:
   commonAnnotations: {}
   commonLabels: {}
 
-  podSecurityContext:
-    enabled: true
-    fsGroup: 1001
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1001
-    runAsNonRoot: true
+#  podSecurityContext:
+#    enabled: true
+#    fsGroup: 1001
+#  containerSecurityContext:
+#    enabled: true
+#    runAsUser: 1001
+#    runAsNonRoot: true
 
   imageRegistry: ""
   imagePullSecrets: []
