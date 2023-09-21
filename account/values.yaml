@@ -1,5 +1,6 @@
 global:
   selfRegistrationEnabled: false
+  throttle_login_delay: 5s
   init:
     admin:
       email: <change me>
@@ -145,6 +146,8 @@ common:
 
     - name: SELF_REGISTRATION_ENABLED
       value: "{{ .Values.global.selfRegistrationEnabled | toString }}"
+    - name: THROTTLE_LOGIN_DELAY
+      value: "{{ .Values.global.throttle_login_delay }}"
   configMaps:
     default:
       enabled: true
