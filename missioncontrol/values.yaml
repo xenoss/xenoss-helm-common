@@ -1,4 +1,5 @@
 global:
+  cookie_domain: <change me>
   hosts:
     mongo: "<change me>"
     account: "<change me>"
@@ -128,6 +129,8 @@ common:
     - name: httpprivate
       containerPort: 8081
   envVars:
+    - name: COOKIE_DOMAIN
+      value: {{ .Values.global.cookie_domain }}
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
     - name: MONGO_HOST
