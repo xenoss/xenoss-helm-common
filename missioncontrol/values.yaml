@@ -130,7 +130,7 @@ common:
       containerPort: 8081
   envVars:
     - name: COOKIE_DOMAIN
-      value: {{ .Values.global.cookie_domain }}
+      value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
     - name: MONGO_HOST
