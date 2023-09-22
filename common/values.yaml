@@ -24,11 +24,7 @@ secretMaps: {}
 commonAnnotations: {}
 service:
   annotations: {}
-daemonset:
-  annotations: {}
-deployment:
-  annotations: {}
-statefulset:
+pod:
   annotations: {}
 
 containerPorts: []
