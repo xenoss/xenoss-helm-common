@@ -203,16 +203,16 @@ global:
     ##   clientIP:
     ##     timeoutSeconds: 300
 
+  pod:
+    annotations: {}
+
   daemonset:
     enabled: false
-    annotations: {}
 
   deployment:
     enabled: false
     replicaCount: 1
-    annotations: {}
 
   statefulset:
     enabled: false
     replicaCount: 1
-    annotations: {}

@@ -8,8 +8,8 @@ metadata:
     {{- if .Values.global.commonLabels }}
     {{- tpl ( .Values.global.commonLabels | toYaml ) $ | nindent 4 }}
     {{- end }}
-  {{- if or .Values.daemonset.annotations .Values.global.daemonset.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
-    {{ $annotations := merge (dict) .Values.daemonset.annotations .Values.global.daemonset.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
+  {{- if or .Values.pod.annotations .Values.global.pod.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
+    {{ $annotations := merge (dict) .Values.pod.annotations .Values.global.pod.annotations .Values.commonAnnotations .Values.global.commonAnnotations }}
   annotations:
     {{- tpl ( $annotations | toYaml ) $ | nindent 4 }}
   {{- end }}
