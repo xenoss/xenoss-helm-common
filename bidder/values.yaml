@@ -36,6 +36,7 @@ global:
       
         <logger name="org" level="ERROR"/>
         <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
+        <logger name="oap.message" level="WARN"/>
         <logger name="io.undertow" level="WARN"/>
         <logger name="oap.application.remote" level="WARN"/>
         <logger name="javax.management" level="ERROR" />
