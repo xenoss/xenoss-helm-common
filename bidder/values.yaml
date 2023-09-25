@@ -120,6 +120,8 @@ common:
     - name: httpprivate
       containerPort: 8081
   envVars:
+    - name: TRAFFIC_OFF
+      value: "false"
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
     - name: REQUEST_WORKERS
