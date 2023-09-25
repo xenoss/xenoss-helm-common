@@ -132,6 +132,8 @@ common:
       value: "{{ .Values.global.hosts.memcached }}"
     - name: HTTP_MC_REMOTE
       value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
+    - name: MESSAGE_SERVER_HOST
+      value: "{{ .Values.global.hosts.missioncontrol }}"
     - name: MESSAGE_CLIENT_LOGGING_PERSISTENCE_DIRECTORY
       value: "{{ .Values.global.messages.persistence_directory }}"
   configMaps:
