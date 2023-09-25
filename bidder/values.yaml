@@ -42,7 +42,7 @@ global:
         <logger name="javax.management" level="ERROR" />
         <logger name="net.rubyeye.xmemcached" level="WARN" />
         <logger name="com.google.code.yanf4j" level="WARN" />
-        <logger name=" oap.concurrent.scheduler" level="WARN" />
+        <logger name="oap.concurrent.scheduler" level="WARN" />
       
         <root level="${APP_LOGGING_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
