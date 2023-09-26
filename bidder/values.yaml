@@ -1,4 +1,9 @@
 global:
+  aerospike:
+    readTimeout: 30
+    readBatchTimeout: 30
+    writeTimeout: 2s
+    connectionTimeout: 10s
   messages:
     persistence_directory: /opt/xenoss-bidder/messages
   hosts:
@@ -142,6 +147,14 @@ common:
       value: "{{ .Values.global.messages.persistence_directory }}"
     - name: AEROSPIKE_HOSTS
       value: "{{ .Values.global.hosts.aerospike }}"
+    - name: AEROSPIKE_READER_READ_TIMEOUT
+      value: "{{ .Values.global.aerospike.readTimeout }}"
+    - name: AEROSPIKE_READER_BATCH_TIMEOUT
+      value: "{{ .Values.global.aerospike.readBatchTimeout }}"
+    - name: AEROSPIKE_READER_WRITE_TIMEOUT
+      value: "{{ .Values.global.aerospike.writeTimeout }}"
+    - name: AEROSPIKE_READER_CONNECTION_TIMEOUT
+      value: "{{ .Values.global.aerospike.connectionTimeout }}"
     - name: LOGGING_HOST
       value: "{{ .Values.global.hosts.logger }}"
   configMaps:
