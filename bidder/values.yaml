@@ -5,6 +5,7 @@ global:
     memcached: "<change me>"
     missioncontrol: "<change me>"
     aerospike: "<change me>"
+    logger: "<change me>"
   exchanges:
     configmap:
       name: ""
@@ -141,6 +142,8 @@ common:
       value: "{{ .Values.global.messages.persistence_directory }}"
     - name: AEROSPIKE_HOSTS
       value: "{{ .Values.global.hosts.aerospike }}"
+    - name: LOGGING_HOST
+      value: "{{ .Values.global.hosts.logger }}"
   configMaps:
     default:
       enabled: true
