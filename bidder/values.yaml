@@ -11,6 +11,9 @@ global:
     missioncontrol: "<change me>"
     aerospike: "<change me>"
     logger: "<change me>"
+    bidder:
+      impressions: <change me>
+      events: <change me>
   exchanges:
     configmap:
       name: ""
@@ -157,6 +160,10 @@ common:
       value: "{{ .Values.global.aerospike.connectionTimeout }}"
     - name: LOGGING_HOST
       value: "{{ .Values.global.hosts.logger }}"
+    - name: BIDDER_IMPR_HOSTS
+      value: "{{ .Values.global.hosts.bidder.impressions }}"
+    - name: BIDDER_EVENT_HOSTS
+      value: "{{ .Values.global.hosts.bidder.events }}"
   configMaps:
     default:
       enabled: true
