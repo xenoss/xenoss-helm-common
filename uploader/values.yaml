@@ -8,7 +8,7 @@ global:
   databaseconfiguration:
     configmap:
       name: ""
-    location: /opt/xenoss-uploader/conf/database-configuration.conf
+    location: /opt/xenoss-uploader/conf/database-configuration.yaml
 
   instance:
     name: default
@@ -191,7 +191,7 @@ common:
       subPath: datamodel.conf
     - name: "{{ .Values.global.databaseconfiguration.configmap.name }}"
       mountPath: "{{ .Values.global.databaseconfiguration.location }}"
-      subPath: database-configuration.conf
+      subPath: database-configuration.yaml
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-uploader/conf/vm.options
       subPath: vm.options
