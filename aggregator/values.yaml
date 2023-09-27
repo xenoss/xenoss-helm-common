@@ -191,7 +191,7 @@ common:
       subPath: datamodel.conf
     - name: "{{ .Values.global.databaseconfiguration.configmap.name }}"
       mountPath: "{{ .Values.global.databaseconfiguration.location }}"
-      subPath: database-configuration.yaml
+      subPath: "database-configuration-{{ .Values.global.instance.name }}.yaml"
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-aggregator/conf/vm.options
       subPath: vm.options
