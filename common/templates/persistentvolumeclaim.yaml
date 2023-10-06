@@ -1,0 +1,25 @@
+{{- if .Values.global.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-{{ template "common.fullname" . }}
+  {{- if $.Values.global.persistence.annotations }}
+  annotations:
+    {{- tpl ( $.Values.global.persistence.annotations | toYaml ) $ | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- range $.Values.global.persistence.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  storageClassName: {{ template "common.fullname" . }}-storage
+  resources:
+    requests:
+      storage: {{ $.Values.global.persistence.size | quote }}
+  {{- if $.Values.global.persistence.volumeMode }}
+  volumeMode: {{ $.Values.global.persistence.volumeMode }}
+  {{- end }}
+  {{- if $.Values.global.persistence.selector }}
+  selector: {{- tpl $.Values.global.persistence.selector $ | toYaml | nindent 10 }}
+  {{- end }}
+{{- end }}

@@ -5,11 +5,9 @@ kind: PersistentVolume
 metadata:
   name: data-{{ template "common.fullname" $ }}-{{ . }}
   namespace: {{ include "common.namespace" $ | quote }}
-  labels: {{- include "common.labels" $ | nindent 4 }}
-  {{- if or $.Values.global.persistence.annotations $.Values.commonAnnotations $.Values.global.commonAnnotations }}
-    {{ $annotations := merge (dict) $.Values.global.persistence.annotations $.Values.commonAnnotations $.Values.global.commonAnnotations }}
+  {{- if $.Values.global.persistence.annotations }}
   annotations:
-    {{- tpl ( $annotations | toYaml ) $ | nindent 4 }}
+    {{- tpl ( $.Values.global.persistence.annotations | toYaml ) $ | nindent 4 }}
   {{- end }}
 spec:
   capacity:
@@ -18,11 +16,9 @@ spec:
   {{- range $.Values.global.persistence.accessModes }}
     - {{ . | quote }}
   {{- end }}
+  storageClassName: {{ template "common.fullname" $ }}-storage
   local:
     path: {{ $.Values.global.persistence.localpath }}
-  claimRef:
-    name: data-{{ template "common.fullname" $ }}-{{ . }}
-    namespace: {{ include "common.namespace" $ | quote }}
   {{- if $.Values.global.nodeSelector }}
   nodeAffinity:
     required:
