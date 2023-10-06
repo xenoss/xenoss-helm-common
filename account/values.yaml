@@ -7,7 +7,7 @@ global:
       email: <change me>
       password:
         secret:
-          name: <secret name>
+          name: ""
       firstname: <change me>
       lastname: <change me>
       roles: {}
@@ -39,13 +39,13 @@ global:
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
             </encoder>
         </appender>
-    
+      
         <logger name="org" level="ERROR"/>
         <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
         <logger name="io.undertow" level="WARN"/>
         <logger name="oap.application.remote" level="WARN"/>
         <logger name="javax.management" level="ERROR" />
-    
+      
         <root level="${APP_LOGGING_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
         </root>
@@ -59,13 +59,13 @@ global:
   commonAnnotations: {}
   commonLabels: {}
 
-#  podSecurityContext:
-#    enabled: true
-#    fsGroup: 1001
-#  containerSecurityContext:
-#    enabled: true
-#    runAsUser: 1001
-#    runAsNonRoot: true
+  #  podSecurityContext:
+  #    enabled: true
+  #    fsGroup: 1001
+  #  containerSecurityContext:
+  #    enabled: true
+  #    runAsUser: 1001
+  #    runAsNonRoot: true
 
   imageRegistry: ""
   imagePullSecrets: []
@@ -126,9 +126,8 @@ common:
     - name: DEFAULT_SYSTEM_ADMIN_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: "{{ .Values.global.init.admin.password.secret.name }}"
+          name: "{{ .Values.global.init.admin.password.secret.name | default ( printf \"%s-admin\" ( include \"common.fullname\" . ) ) }}"
           key: admin-password
-      value:
     - name: DEFAULT_SYSTEM_ADMIN_FIRST_NAME
       value: "{{ .Values.global.init.admin.firstname }}"
     - name: DEFAULT_SYSTEM_ADMIN_LAST_NAME
