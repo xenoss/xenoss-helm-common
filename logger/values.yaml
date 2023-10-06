@@ -164,7 +164,7 @@ common:
         name: "{{ include \"common.fullname\" $ }}"
     - name: storage
       persistentVolumeClaim:
-        claimName: data-{{ include "common.fullname" $ }}-0
+        claimName: data-{{ include "common.fullname" $ }}
   volumeMounts:
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-logger/conf/vm.options
