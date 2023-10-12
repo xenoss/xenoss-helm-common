@@ -27,33 +27,5 @@ spec:
       {{- include "common.podAnnotations" . }}
     spec:
       hostname: {{ template "common.fullname" . }}
-      {{- include "common.pullSecrets" $ | nindent 6 }}
-      {{- if .Values.global.nodeSelector }}
-      nodeSelector: {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
-      {{- end }}
-      {{- if .Values.global.podSecurityContext.enabled }}
-      securityContext: {{- omit .Values.global.podSecurityContext "enabled" | toYaml | nindent 8 }}
-      {{- end }}
-      containers:
-        - name: {{ include "common.name" $ }}
-          image: {{ include "common.image" $ }}
-          imagePullPolicy: {{ .Values.global.image.pullPolicy | quote }}
-          {{- if .Values.global.containerSecurityContext.enabled }}
-          securityContext: {{- omit .Values.global.containerSecurityContext "enabled" | toYaml | nindent 12 }}
-          {{- end }}
-          {{- if .Values.global.command }}
-          command: {{- tpl ( .Values.global.command | toYaml ) $ | nindent 12 }}
-          {{- end }}
-          {{- if .Values.global.args }}
-          args: {{- tpl ( .Values.global.args | toYaml ) $ | nindent 12 }}
-          {{- end }}
-          {{- if .Values.global.lifecycleHooks }}
-          lifecycle: {{- tpl ( .Values.global.lifecycleHooks | toYaml ) $ | nindent 12 }}
-          {{- end }}
-          {{- if or .Values.global.extraEnvVars .Values.envVars }}
-          {{- $envVars := concat (list) .Values.envVars .Values.global.extraEnvVars }}
-          env:
-            {{- tpl ( $envVars | toYaml ) $ | nindent 12 }}
-          {{- end }}
 {{- include "pod.content" $ }}
 {{- end }}

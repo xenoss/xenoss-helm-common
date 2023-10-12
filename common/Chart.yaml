@@ -12,4 +12,4 @@ name: common
 sources:
   - https://github.com/xenoss/xenoss-helm-common
 type: application
-version: 1.0.4
+version: 1.0.5

@@ -1,4 +1,32 @@
 {{- define "pod.content" -}}
+      {{- include "common.pullSecrets" $ | nindent 6 }}
+      {{- if .Values.global.nodeSelector }}
+      nodeSelector: {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.global.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "common.name" $ }}
+          image: {{ include "common.image" $ }}
+          imagePullPolicy: {{ .Values.global.image.pullPolicy | quote }}
+          {{- if .Values.global.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.global.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.global.command }}
+          command: {{- tpl ( .Values.global.command | toYaml ) $ | nindent 12 }}
+          {{- end }}
+          {{- if .Values.global.args }}
+          args: {{- tpl ( .Values.global.args | toYaml ) $ | nindent 12 }}
+          {{- end }}
+          {{- if .Values.global.lifecycleHooks }}
+          lifecycle: {{- tpl ( .Values.global.lifecycleHooks | toYaml ) $ | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.global.extraEnvVars .Values.envVars }}
+          {{- $envVars := concat (list) .Values.envVars .Values.global.extraEnvVars }}
+          env:
+            {{- tpl ( $envVars | toYaml ) $ | nindent 12 }}
+          {{- end }}
           {{- if or .Values.envVarsSecret .Values.global.extraEnvVarsSecret .Values.envVarsCM .Values.global.extraEnvVarsCM }}
             {{- $envVarsSecret := concat (list) .Values.envVarsSecret .Values.global.extraEnvVarsSecret }}
             {{- $envVarsCM := concat (list) .Values.envVarsCM .Values.global.extraEnvVarsCM }}
@@ -15,7 +43,7 @@
           {{- if or .Values.containerPorts .Values.global.extraContainerPorts }}
           {{- $containerPorts := concat (list) .Values.containerPorts .Values.global.extraContainerPorts }}
           ports:
-            {{- tpl ( $containerPorts | toYaml ) $ | nindent 12 }}
+            {{- include "common.tpl.ports" ( dict "Root" . "Template" $containerPorts ) | nindent 12 }}
           {{- end }}
 
           {{- if .Values.global.resources }}
@@ -26,6 +54,10 @@
           volumeMounts:
             {{- include "common.volumesMounts" ( dict "VolumeMounts" $volumeMounts "Root" $ ) }}
           {{- end }}
+      {{- $containers := concat (list) .Values.containers .Values.global.extraContainers }}
+      {{- if $containers }}
+      {{- tpl ( $containers | toYaml ) $ | nindent 8 }}
+      {{- end }}
       {{- if or .Values.volumes .Values.global.extraVolumes }}
         {{- $volumes := concat (list) .Values.volumes .Values.global.extraVolumes }}
       volumes:

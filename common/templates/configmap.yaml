@@ -20,7 +20,7 @@ metadata:
   {{- end }}
 data:
 {{- range $key, $value := $config.files }}
-  {{ $key }}: |
+  {{ tpl $key $ }}: |
 {{ tpl $value $ | indent 4 }}
 {{- end }}
 

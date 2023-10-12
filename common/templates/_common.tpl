@@ -101,3 +101,8 @@ imagePullSecrets:
      1
   {{- end -}}
 {{- end }}
+
+[% function removes false quotes from the port number %}
+{{- define "common.tpl.ports" -}}
+{{- regexReplaceAll "(\\w):\\s+'(\\d+)'" ( tpl (.Template | toYaml ) .Root ) "${1}: ${2}" }}
+{{- end }}
