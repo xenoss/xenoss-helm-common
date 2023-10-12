@@ -1,0 +1,13 @@
+annotations:
+  category: Infrastructure
+apiVersion: v2
+appVersion: 0.0.1
+dependencies:
+  - name: common
+    repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
+    version: 1.x.x
+home: https://xenoss.com
+name: lb
+sources:
+  - https://github.com/oaplatform/oap-lb.git
+version: 0.0.1

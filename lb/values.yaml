@@ -1,0 +1,482 @@
+global:
+  version:
+    perl: 0.0.1-10
+  region: ""
+  hosts: []
+  ports:
+    http: 8000
+    https: 8443
+  upstream:
+    name: "<change me>"
+    regexp: "<>"
+    max_fails: 60
+    fail_timeout: 1
+    max_conns: 200
+    upsync:
+      consul: consul-headless.dsp-system
+      timeout: 6m
+      interval: 500ms
+    health:
+      interval: 200
+      rise: 2
+      fall: 30
+      timeout: 3000
+
+    keepalive: 200
+    keepalive_requests: "999999"
+    keepalive_timeout: 3600s
+
+  worker_processes: auto
+  worker_rlimit_nofile: 10000
+  worker_shutdown_timeout: 10s
+  worker_cpu_affinity: auto
+  error_log: error
+  worker_connections: 10000
+
+  keepalive_requests: "99999999"
+  reset_timedout_connection: "on"
+
+  statefulset:
+    enabled: true
+    replicaCount: 1
+  nameOverride: lb
+  fullnameOverride: ""
+  commonAnnotations: {}
+  commonLabels: {}
+
+  #  podSecurityContext:
+  #    enabled: true
+  #    fsGroup: 1001
+  #  containerSecurityContext:
+  #    enabled: true
+  #    runAsUser: 1001
+  #    runAsNonRoot: true
+
+  imageRegistry: ""
+  imagePullSecrets: []
+  extraDeploy: []
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      port: httpprivate
+  image:
+    registry: docker.oaplatform.org
+    repository: "oap-nginx"
+    tag: "XXX"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    ##   - myRegistryKeySecretName
+    loglevel: DEBUG
+
+  service:
+    enabled: true
+    clusterIP: None
+    ports:
+      httpprivate: 8081
+    extraPorts:
+      - name: httpprivate
+        port: 8081
+        targetPort: httpprivate
+
+  command: ["/bin/sh","-c"]
+  args:
+    - "cp /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf.init /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf
+      && exec nginx -g \"daemon off;\""
+
+common:
+  containerPorts:
+    - name: http
+      containerPort: "{{ .Values.global.ports.http }}"
+      hostPort: "{{ .Values.global.ports.http }}"
+      protocol: TCP
+    - name: https
+      containerPort: "{{ .Values.global.ports.https }}"
+      hostPort: "{{ .Values.global.ports.https }}"
+      protocol: TCP
+    - name: httpprivate
+      containerPort: 8081
+
+  configMaps:
+    test:
+      enabled: true
+    default:
+      enabled: true
+      files:
+        upstream-consul.pl: |
+          use strict;
+          use warnings;
+          
+          use Try::Tiny;
+          use HTTP::Async;
+          use HTTP::Request;
+          use LWP::UserAgent ();
+          use File::Compare;
+          use Data::Dump;
+          # use bigint qw/hex/;
+          use HTTP::Status qw(:constants :is status_message);
+          use JSON::Parse 'parse_json';
+          use JSON;
+          use MIME::Base64;
+          use Data::Compare;
+          
+          my $MAX_FAILS = $ENV{'MAX_FAILS'};
+          my $FAIL_TIMEOUT = $ENV{'FAIL_TIMEOUT'};
+          my $MAX_CONNS = $ENV{'MAX_CONNS'};
+          my $CONSUL_HOST = $ENV{'CONSUL_HOST'};
+          my $UPSTREAM = $ENV{'UPSTREAM'};
+          my $PATTERN = $ENV{'PATTERN'};
+          
+          print "upstream [$UPSTREAM] max_fails $MAX_FAILS fail_timeout $FAIL_TIMEOUT max_conns $MAX_CONNS consul host '$CONSUL_HOST'\n";
+          
+          my $upstreamBody = "{\"weight\":10000,\"max_fails\":$MAX_FAILS,\"fail_timeout\":$FAIL_TIMEOUT,\"max_conns\":$MAX_CONNS}";
+          
+          my $async = HTTP::Async->new(timeout => 1);
+          
+          sub get_upstream {
+              my $pattern = $_[0];
+              my $port = $_[1];
+              my $label = $_[2];
+          
+              print "pods " . $pattern . "\n";
+          
+              my $pods = `kubectl --kubeconfig=/etc/kubernetes/kubelet.conf get pods -n dsp -o wide | grep Running | grep -E "$pattern"`;
+          
+              print "--- pods ---\n\n" . $pods . "\n\n---\n";
+          
+              my @servers;
+              my @fail;
+          
+              foreach my $line (split /\n/, $pods) {
+                  my @cells = split(' ', $line);
+                  my $podName = $cells[0];
+                  my $podIp = $cells[5];
+          
+                  $async->add(HTTP::Request->new(GET => "http://" . $podIp . ":8081/healtz?podIp=" . $podIp ));
+              }
+          
+              while (my $response = $async->wait_for_next_response) {
+                  # print $response->base . " - " . $response->code . "\n";
+          
+                  my $index = rindex $response->base, '=';
+                  my $podIp = substr $response->base, $index + 1;
+          
+                  if ($response->code == 200) {
+                      push @servers, "upstreams/backend-$label/$podIp:$port";
+                  }
+                  else {
+                      push @fail, "upstreams/backend-$label/$podIp:$port";
+                  }
+              }
+          
+              my $resSize = scalar @servers;
+          
+              if ($resSize == 0) {
+                  @servers = @fail;
+              }
+          
+              @servers = sort @servers;
+          
+              return @servers;
+          }
+          
+          sub process {
+              my $ua = LWP::UserAgent->new(timeout => 10);
+          
+              print "find by pattern '$PATTERN'\n";
+          
+              my @servers = get_upstream $PATTERN, "8080", $UPSTREAM;
+              print "    " . @servers . "\n";
+          
+              my $get = "http://$CONSUL_HOST:8500/v1/kv/upstreams/backend-$UPSTREAM?recurse";
+          
+              print "consul get upstream '" . $get . "'\n";
+              my $response = $ua->get($get);
+          
+              my @add;
+              my @del;
+          
+              if ($response->is_success || $response->code == HTTP_NOT_FOUND) {
+                  my %available;
+                  if ($response->is_success) {
+                      print $response->decoded_content . "\n";
+                      my $json = parse_json $response->decoded_content;
+                      foreach my $node (@$json) {
+                          my $json = decode_base64($node->{'Value'});
+                          print "available $node->{'Key'} value '$json'\n";
+                          $available{$node->{'Key'}} = $json;
+                      }
+                  }
+                  else {
+                      print "upstream not found\n";
+                  }
+          
+                  foreach my $server (@servers) {
+                      if (!exists($available{$server}) || ($upstreamBody ne $available{$server})) {
+                          push @add, $server;
+                      }
+                      else {
+                          print("$server exists.\n")
+                      }
+                  }
+          
+                  my %delHash;
+                  while (my ($key, $value) = each %available) {
+                      $delHash{$key} = $value;
+                  }
+          
+                  foreach my $server (@servers) {
+                      delete $delHash{$server};
+                  }
+          
+                  @del = keys(%delHash)
+              }
+          
+              print "update [@add]\n";
+              print "del [@del]\n";
+          
+              foreach my $addServer (@add) {
+                  my $addServerUrl = "http://$CONSUL_HOST:8500/v1/kv/$addServer";
+          
+                  $async->add(HTTP::Request->new(PUT => $addServerUrl, [], $upstreamBody));
+              }
+          
+              foreach my $delServer (@del) {
+                  my $delServerUrl = "http://$CONSUL_HOST:8500/v1/kv/$delServer";
+          
+                  $async->add(HTTP::Request->new(DELETE => $delServerUrl, []));
+              }
+          
+              while (my $response = $async->wait_for_next_response) {
+                  print $response->request->method . ' ' . $response->base . " - " . $response->code . "\n";
+              }
+          }
+          
+          my $run = 1;
+          use sigtrap handler => sub { $run = 0 }, 'INT';
+          while ($run) {
+              try {
+                  process;
+              }
+              catch {
+                  warn "caught error: $_";
+              };
+          
+              sleep 5;
+          }
+        nginx.conf: |
+          pid /tmp/nginx.pid;
+
+          worker_processes {{ .Values.global.worker_processes }};
+          worker_rlimit_nofile {{ .Values.global.worker_rlimit_nofile }};
+          worker_shutdown_timeout {{ .Values.global.worker_shutdown_timeout }};
+          worker_cpu_affinity {{ .Values.global.worker_cpu_affinity }};
+          
+          error_log stderr {{ .Values.global.error_log }};
+          
+          events {
+            worker_connections {{ .Values.global.worker_connections }};
+          }
+          
+          http {
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+
+            keepalive_requests {{ .Values.global.keepalive_requests }};
+            reset_timedout_connection {{ .Values.global.reset_timedout_connection }};
+            server_names_hash_bucket_size 128;
+
+            lua_package_path '/etc/nginx/lua/tengine-prometheus-master/src/?.lua;;';
+
+            req_status_zone server "$host" 10M;
+            req_status_zone_add_indicator server $host;
+            req_status_zone_recycle server 10 60;
+          
+          
+            upstream {{ .Values.global.upstream.name }} {
+              upsync {{ .Values.global.upstream.upsync.consul }}:8500/v1/kv/upstreams/backend-{{ .Values.global.upstream.name }} upsync_timeout={{ .Values.global.upstream.upsync.timeout }} upsync_interval={{ .Values.global.upstream.upsync.interval }} upsync_type=consul strong_dependency=off;
+              upsync_dump_path /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf;
+
+              include /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf;
+
+              keepalive {{ .Values.global.upstream.keepalive }};
+              keepalive_requests {{ .Values.global.upstream.keepalive_requests }};
+              keepalive_timeout {{ .Values.global.upstream.keepalive_timeout }};
+
+              check interval={{ .Values.global.upstream.health.interval }} rise={{ .Values.global.upstream.health.rise }} fall={{ .Values.global.upstream.health.fall }} timeout={{ .Values.global.upstream.health.timeout }} type=http default_down=false;
+              check_http_send "GET /healtz HTTP/1.0\r\n\r\n";
+              check_http_expect_alive http_2xx;
+            }
+
+            ssl_certificate         /etc/nginx/ssl/tls.crt;
+            ssl_certificate_key     /etc/nginx/ssl/tls.key;
+  
+            server {
+              access_log off;
+      
+              req_status server;
+
+              listen 80 reuseport backlog=65536;
+              listen 443 ssl reuseport backlog=65536;
+          
+              location @return_204 {
+                access_log off;
+                return 204;
+              }
+          
+              location @ret302 {
+                add_header Set-Cookie $upstream_http_impId;
+                add_header Set-Cookie $upstream_http_clickTime;
+                return 302 $upstream_http_location;
+              }
+
+              location /static/pixel.png {
+                empty_png;
+              }
+          
+              location / {
+                access_log off;
+
+                more_clear_headers      'Date';
+                more_clear_headers      'Server';
+                more_clear_headers      'Access-Control-Allow-*'
+          
+                keepalive_timeout       60s;
+          
+                proxy_pass              http://{{ .Values.global.upstream.name }};
+                proxy_http_version      1.1;
+                proxy_set_header        X-Forwarded-For $remote_addr;
+                proxy_set_header        X-Forwarded-Proto $scheme;
+                proxy_set_header        Host $host;
+                proxy_set_header        Connection "";
+                add_header              X-OpenRTB-Version 2.5;
+
+                proxy_read_timeout      80s;
+                proxy_send_timeout      80s;
+                proxy_connect_timeout   20s;
+                proxy_next_upstream_timeout 60s;
+                proxy_next_upstream_tries 3;
+                proxy_buffering         off;
+                proxy_request_buffering on;
+                proxy_max_temp_file_size 0;
+          
+                client_body_buffer_size 128k;
+                client_max_body_size    128k;
+          
+                error_page 302 = @ret302;
+          
+                error_page 404 408 500 501 502 503 504 = @return_204;
+                proxy_intercept_errors  on;
+          
+                proxy_next_upstream     error timeout http_429 http_500 http_502 http_503 http_504 non_idempotent;
+              }
+            }
+          
+            server {
+              access_log off;
+              listen 8081;
+          
+              location /healtz {
+                check_status;
+                access_log off;
+              }
+
+              location /stub_status {
+                stub_status;
+              }
+          
+              location /req_status {
+                req_status_show server;
+                req_status_show_field bytes_in bytes_out conn_total req_total http_2xx http_3xx http_4xx http_5xx http_other_status rt ups_req ups_rt ups_tries http_200 http_206 http_302 http_304 http_403 http_404 http_416 http_499 http_500 http_502 http_503 http_504 http_508 http_other_detail_status http_ups_4xx http_ups_5xx;
+              }
+          
+              location /metrics {
+                content_by_lua_file "/etc/nginx/lua/tengine-prometheus-master/src/metrics.lua";
+              }
+          
+              location = /upstream_show {
+                access_log   off;
+          
+                upstream_show;
+              }
+          
+              location /status {
+                check_status;
+          
+                access_log   off;
+              }
+            }
+          }
+        servers_backend-{{ .Values.global.upstream.name }}.conf: server 127.0.0.1:3204;
+
+  volumes:
+    - name: "{{ include \"common.fullname\" $ }}"
+      configMap:
+        name: "{{ include \"common.fullname\" $ }}"
+    - name: tls
+      secret:
+        secretName: dsp-tls
+    - name: kubectl
+      hostPath:
+        path: /usr/bin/kubectl
+        type: File
+    - name: kubeconfig
+      hostPath:
+        path: /etc/kubernetes/kubelet.conf
+        type: File
+    - name: kubelet-pki
+      hostPath:
+        path: /var/lib/kubelet/pki
+        type: Directory
+  volumeMounts:
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
+      readOnly: true
+    - name: "{{ include \"common.fullname\" $ }}"
+      mountPath: /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf.init
+      subPath: servers_backend-{{ .Values.global.upstream.name }}.conf
+      readOnly: true
+    - name: tls
+      mountPath: /etc/nginx/ssl
+
+  containers:
+    - name: upstream-sync
+      image: "{{ tpl .Values.global.image.registry . }}/oap-perl:{{ .Values.global.version.perl }}"
+      command:
+        - perl
+        - /usr/local/bin/upstream-consul.pl
+      env:
+        - name: CONSUL_HOST
+          value: "{{ .Values.global.upstream.upsync.consul }}"
+        - name: MAX_CONNS
+          value: "{{ .Values.global.upstream.max_conns }}"
+        - name: FAIL_TIMEOUT
+          value: "{{ .Values.global.upstream.fail_timeout }}"
+        - name: MAX_FAILS
+          value: "{{ .Values.global.upstream.max_fails }}"
+        - name: UPSTREAM_PORT
+          value: "8080"
+        - name: UPSTREAM
+          value: "{{ .Values.global.upstream.name }}"
+        - name: PATTERN
+          value: "{{ .Values.global.upstream.regexp }}"
+      volumeMounts:
+        - name: "{{ include \"common.fullname\" $ }}"
+          mountPath: /usr/local/bin/upstream-consul.pl
+          subPath: upstream-consul.pl
+          readOnly: true
+        - name: kubectl
+          mountPath: /usr/bin/kubectl
+          readOnly: true
+        - name: kubeconfig
+          mountPath: /etc/kubernetes/kubelet.conf
+          readOnly: true
+        - name: kubelet-pki
+          mountPath: /var/lib/kubelet/pki
+          readOnly: true
+
+  podAnnotations:
+    reloader.stakater.com/auto: "true"
