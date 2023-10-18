@@ -4,10 +4,20 @@ global:
 
   storage:
     type: S3A
+    configurationFrom:
+      secret:
+        name: "aws-auth"
+        properties:
+          - source: access-key
+            env: AWS_ACCESS_KEY_ID
+            target: fs.s3a.access.key
+          - source: secret-access-key
+            env: AWS_SECRET_ACCESS_KEY
+            target: fs.s3a.secret.key
     configuration:
-      fs.s3a.endpoint: s3a://s3-website.us-east-1.amazonaws.com/test-bucket
-      fs.s3a.access.key: <access key>
-      fs.s3a.secret.key: <security key>
+      fs.s3a.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3a.path.style.access: true
+      fs.s3a.bucket: test-logs
 
   jvm:
     options: |
@@ -137,7 +147,7 @@ common:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
     - name: HTTP_FILEX_REMOTE
@@ -151,7 +161,9 @@ common:
     - name: UPLOADER_HADOOP_FILESYSTEM_TYPE
       value: "{{ .Values.global.storage.type }}"
     - name: UPLOADER_HADOOP_CONFIGURATION
-      value: json({{ .Values.global.storage.configuration | toJson }})
+      value: {{ include "hadoop.configuration" . | quote }}
+    {{- include "hadoop.env" . }}
+
   configMaps:
     default:
       enabled: true
