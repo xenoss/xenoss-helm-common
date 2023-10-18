@@ -23,9 +23,11 @@
           lifecycle: {{- tpl ( .Values.global.lifecycleHooks | toYaml ) $ | nindent 12 }}
           {{- end }}
           {{- if or .Values.global.extraEnvVars .Values.envVars }}
-          {{- $envVars := concat (list) .Values.envVars .Values.global.extraEnvVars }}
+          {{- $envVars := list }}
+          {{- $envVars = concat $envVars ( include "common.tpl" ( dict "Template" .Values.envVars "Root" $ ) | fromYamlArray ) }}
+          {{- $envVars = concat $envVars ( include "common.tpl" ( dict "Template" .Values.global.extraEnvVars "Root" $ ) | fromYamlArray ) }}
           env:
-            {{- tpl ( $envVars | toYaml ) $ | nindent 12 }}
+            {{- $envVars | toYaml | nindent 12 }}
           {{- end }}
           {{- if or .Values.envVarsSecret .Values.global.extraEnvVarsSecret .Values.envVarsCM .Values.global.extraEnvVarsCM }}
             {{- $envVarsSecret := concat (list) .Values.envVarsSecret .Values.global.extraEnvVarsSecret }}

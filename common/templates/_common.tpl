@@ -106,3 +106,11 @@ imagePullSecrets:
 {{- define "common.tpl.ports" -}}
 {{- regexReplaceAll "(\\w):\\s+'(\\d+)'" ( tpl (.Template | toYaml ) .Root ) "${1}: ${2}" }}
 {{- end }}
+
+{{- define "common.tpl" -}}
+  {{- if kindIs "string" .Template -}}
+    {{- tpl .Template .Root -}}
+  {{- else -}}
+    {{- tpl ( .Template | toYaml ) .Root -}}
+  {{- end -}}
+{{- end -}}
