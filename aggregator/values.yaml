@@ -18,10 +18,20 @@ global:
 
   storage:
     type: S3A
+    configurationFrom:
+      secret:
+        name: "aws-auth"
+        properties:
+          - source: access-key
+            env: AWS_ACCESS_KEY_ID
+            target: fs.s3a.access.key
+          - source: secret-access-key
+            env: AWS_SECRET_ACCESS_KEY
+            target: fs.s3a.secret.key
     configuration:
-      fs.s3a.endpoint: s3aa://s3-website.us-east-1.amazonaws.com/test-bucket
-      fs.s3a.access.key: <access key>
-      fs.s3a.secret.key: <security key>
+      fs.s3a.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3a.path.style.access: true
+      fs.s3a.bucket: test-logs
 
   jvm:
     options: |
@@ -147,28 +157,30 @@ common:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: APP_LOGGING_LEVEL
-      value: "{{ .Values.global.logs.loglevel }}"
+      value: {{ .Values.global.logs.loglevel }}
     - name: HTTP_FILEX_REMOTE
-      value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
+      value: http://{{ .Values.global.hosts.filex }}:8081/remote/
 
     - name: DATAMODEL_LOCATION
-      value: "path({{ .Values.global.datamodel.location }})"
+      value: path({{ .Values.global.datamodel.location }})
 
     - name: AGGREGATOR_NAME
-      value: "{{ .Values.global.instance.name }}"
+      value: {{ .Values.global.instance.name }}
     - name: DATABASE_CONFIGURATION_LOCATION
-      value: "path({{ .Values.global.databaseconfiguration.location }})"
+      value: path({{ .Values.global.databaseconfiguration.location }})
     - name: CLICKHOUSE_HOST
-      value: "{{ .Values.global.instance.clickhouse.host }}"
+      value: {{ .Values.global.instance.clickhouse.host }}
     - name: CLICKHOUSE_DATABASE
-      value: "{{ .Values.global.instance.clickhouse.database }}"
+      value: {{ .Values.global.instance.clickhouse.database }}
 
     - name: AGGREGATOR_HADOOP_FILESYSTEM_TYPE
-      value: "{{ .Values.global.storage.type }}"
+      value: {{ .Values.global.storage.type }}
     - name: AGGREGATOR_HADOOP_CONFIGURATION
-      value: json({{ .Values.global.storage.configuration | toJson }})
+      value: {{ include "hadoop.configuration" . | quote }}
+    {{- include "hadoop.env" . }}
+
   configMaps:
     default:
       enabled: true
