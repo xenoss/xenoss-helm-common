@@ -318,8 +318,8 @@ common:
       
               req_status server;
 
-              listen 80 reuseport backlog=65536;
-              listen 443 ssl reuseport backlog=65536;
+              listen {{ .Values.global.ports.http }} reuseport backlog=65536;
+              listen {{ .Values.global.ports.https }} ssl reuseport backlog=65536;
           
               location @return_204 {
                 access_log off;
