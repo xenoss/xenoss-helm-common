@@ -86,6 +86,16 @@ global:
     - "cp /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf.init /etc/nginx/servers_backend-{{ .Values.global.upstream.name }}.conf
       && exec nginx -g \"daemon off;\""
 
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+    httpGet:
+      path: /healtz
+      port: httpprivate
+
 common:
   containerPorts:
     - name: http
