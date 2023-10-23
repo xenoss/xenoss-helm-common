@@ -82,6 +82,10 @@ global:
 #    - name: httpprivate
 #      containerPort: 8081
 
+  startupProbe: {}
+  livenessProbe: {}
+  readinessProbe: {}
+
   persistence:
     enabled: false
     annotations: {}

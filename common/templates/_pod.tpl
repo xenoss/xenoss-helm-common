@@ -48,6 +48,16 @@
             {{- include "common.tpl.ports" ( dict "Root" . "Template" $containerPorts ) | nindent 12 }}
           {{- end }}
 
+          {{- if .Values.global.livenessProbe }}
+          livenessProbe: {{- include "common.tpl" (dict "Template" .Values.global.livenessProbe "Root" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.global.readinessProbe }}
+          readinessProbe: {{- include "common.tpl" (dict "Template" .Values.global.readinessProbe "Root" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.global.startupProbe }}
+          startupProbe: {{- include "common.tpl" (dict "Template" .Values.global.startupProbe "Root" $) | nindent 12 }}
+          {{- end }}
+
           {{- if .Values.global.resources }}
           resources: {{- toYaml .Values.global.resources | nindent 12 }}
           {{- end }}
