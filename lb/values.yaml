@@ -43,6 +43,7 @@ global:
   fullnameOverride: ""
   commonAnnotations: {}
   commonLabels: {}
+  terminationGracePeriodSeconds: 10
 
   #  podSecurityContext:
   #    enabled: true
@@ -265,7 +266,7 @@ common:
           }
           
           my $run = 1;
-          use sigtrap handler => sub { $run = 0 }, 'INT';
+          use sigtrap handler => sub { $run = 0 }, 'TERM';
           while ($run) {
               try {
                   process;
