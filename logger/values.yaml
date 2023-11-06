@@ -1,4 +1,9 @@
 global:
+  file_pattern:
+    default: "<YEAR>-<MONTH>/<DAY>/<LOG_TYPE>_v<LOG_VERSION>_<SERVER_HOST>-<YEAR>-<MONTH>-<DAY>-<HOUR>-<INTERVAL>.tsv.gz"
+    types: {}
+#      BIDS:
+#        path: "<YEAR>-<MONTH>/<DAY>/<LOG_TYPE>_v<LOG_VERSION>_<SERVER_HOST>-<YEAR>-<MONTH>-<DAY>-<HOUR>-<INTERVAL>.tsv.gz"
   hosts:
     filex: <change me>
 
@@ -101,6 +106,17 @@ global:
 
   command: []
   args: []
+
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+    httpGet:
+      path: /healtz
+      port: httpprivate
+
   lifecycleHooks: {}
   ##   - name: FOO
   ##     value: "bar"
@@ -159,9 +175,13 @@ common:
       value: /opt/xenoss-logger/logs
 
     - name: UPLOADER_HADOOP_FILESYSTEM_TYPE
-      value: "{{ .Values.global.storage.type }}"
+      value: {{ .Values.global.storage.type }}
     - name: UPLOADER_HADOOP_CONFIGURATION
       value: {{ include "hadoop.configuration" . | quote }}
+    - name: FILE_PATTERN
+      value: {{ .Values.global.file_pattern.default }}
+    - name: FILE_PATTERN_BY_TYPE
+      value: json({{ .Values.global.file_pattern.types | toJson }})
     {{- include "hadoop.env" . }}
 
   configMaps:

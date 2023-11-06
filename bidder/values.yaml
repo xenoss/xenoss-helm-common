@@ -20,7 +20,7 @@ global:
   datamodel:
     configmap:
       name: ""
-    location: /opt/xenoss-bidder/conf/datamodel
+    location: /opt/xenoss-bidder/conf/datamodel.conf
   pools:
     requestWorkers: 100
   jvm:
@@ -90,6 +90,17 @@ global:
 
   command: []
   args: []
+
+  livenessProbe:
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+    httpGet:
+      path: /healtz
+      port: httpprivate
+
   lifecycleHooks: {}
   ##   - name: FOO
   ##     value: "bar"
@@ -138,8 +149,8 @@ common:
       value: "{{ .Values.global.logs.loglevel }}"
     - name: REQUEST_WORKERS
       value: "{{ .Values.global.pools.requestWorkers }}"
-    - name: DATAMODEL_LOCATION
-      value: "{{ .Values.global.datamodel.location }}"
+    - name: DATAMODEL_PATH
+      value: "path({{ .Values.global.datamodel.location }})"
     - name: DUPLICATE_IMPRESSIONS_STORAGE_MEMCACHED_HOST
       value: "{{ .Values.global.hosts.memcached }}"
     - name: HTTP_MC_REMOTE
@@ -185,7 +196,7 @@ common:
       mountPath: /opt/xenoss-bidder/conf/exchanges.yaml
       subPath: exchanges.yaml
     - name: "{{ .Values.global.datamodel.configmap.name }}"
-      mountPath: "{{ .Values.global.datamodel.location }}/config.v1.conf"
+      mountPath: "{{ .Values.global.datamodel.location }}"
       subPath: datamodel.conf
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-bidder/conf/vm.options
