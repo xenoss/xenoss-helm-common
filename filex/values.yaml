@@ -102,7 +102,7 @@ common:
     - name: MONGO_HOST
       value: "{{ .Values.global.hosts.mongo }}"
     - name: WORKFLOW_RESOURCE
-      value: "file(/opt/xenoss-filex/conf/filex-workflow.yaml)"
+      value: "path(/opt/xenoss-filex/conf/filex-workflow.yaml)"
   configMaps:
     default:
       enabled: true
