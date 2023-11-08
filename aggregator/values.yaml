@@ -1,4 +1,5 @@
 global:
+  log_interval_minutes: 5
   hosts:
     filex: <change me>
   datamodel:
@@ -179,6 +180,8 @@ common:
       value: {{ .Values.global.storage.type }}
     - name: AGGREGATOR_HADOOP_CONFIGURATION
       value: {{ include "hadoop.configuration" . | quote }}
+    - name: BUCKETS_PER_HOUR
+      value: {{ div 60 .Values.global.log_interval_minutes | quote }}
     {{- include "hadoop.env" . }}
 
   configMaps:
