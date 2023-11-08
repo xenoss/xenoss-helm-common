@@ -1,4 +1,12 @@
 global:
+  log_interval_minutes: 5
+  disk:
+    refresh:
+      init_delay: 10s
+      period: 10s
+  finisher:
+    cron: "0 * * * * ? *"
+    safe_interval: 30s
   file_pattern:
     default: "<YEAR>-<MONTH>/<DAY>/<LOG_TYPE>_v<LOG_VERSION>_<SERVER_HOST>-<YEAR>-<MONTH>-<DAY>-<HOUR>-<INTERVAL>.tsv.gz"
     types: {}
@@ -182,6 +190,16 @@ common:
       value: {{ .Values.global.file_pattern.default }}
     - name: FILE_PATTERN_BY_TYPE
       value: json({{ .Values.global.file_pattern.types | toJson }})
+    - name: BUCKETS_PER_HOUR
+      value: {{ div 60 .Values.global.log_interval_minutes | quote }}
+    - name: UPLOADER_CRON
+      value: {{ .Values.global.finisher.cron | quote }}
+    - name: UPLOADER_SAFE_INTERVAL
+      value: {{ .Values.global.finisher.safe_interval | quote }}
+    - name: UPLOADER_REFRESH_INIT_DELAY
+      value: {{ .Values.global.disk.refresh.init_delay | quote }}
+    - name: UPLOADER_REFRESH_PERIOD
+      value: {{ .Values.global.disk.refresh.period | quote }}
     {{- include "hadoop.env" . }}
 
   configMaps:
