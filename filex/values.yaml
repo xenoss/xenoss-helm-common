@@ -1,6 +1,5 @@
 global:
-  hosts:
-    mongo: "<change me>"
+  mongo: "mongodb://mongo:27017/filex"
   workflow:
     configmap: filex-workflow.yaml
   jvm:
@@ -99,8 +98,8 @@ common:
   envVars:
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
-    - name: MONGO_HOST
-      value: "{{ .Values.global.hosts.mongo }}"
+    - name: MONGO_CONNECTION_URL
+      value: "{{ .Values.global.mongo }}"
     - name: WORKFLOW_RESOURCE
       value: "path(/opt/xenoss-filex/conf/filex-workflow.yaml)"
   configMaps:

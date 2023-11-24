@@ -17,8 +17,7 @@ global:
       name: <change me>
       description: <change me>
       readonly: true
-  hosts:
-    mongo: "<change me>"
+  mongo: "mongodb://mongo:27017/account"
   jvm:
     options: |
       -Xmx128M
@@ -116,8 +115,8 @@ common:
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
-    - name: MONGO_HOST
-      value: "{{ .Values.global.hosts.mongo }}"
+    - name: MONGO_CONNECTION_URL
+      value: "{{ .Values.global.mongo }}"
 
     - name: DEFAULT_SYSTEM_ADMIN_EMAIL
       value: "{{ .Values.global.init.admin.email }}"

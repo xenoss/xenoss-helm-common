@@ -1,7 +1,7 @@
 global:
+  mongo: "mongodb://mongo:27017/missioncontrol"
   cookie_domain: <change me>
   hosts:
-    mongo: "<change me>"
     account: "<change me>"
   exchanges:
     configmap:
@@ -133,8 +133,8 @@ common:
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
-    - name: MONGO_HOST
-      value: "{{ .Values.global.hosts.mongo }}"
+    - name: MONGO_CONNECTION_URL
+      value: "{{ .Values.global.mongo }}"
     - name: HTTP_SECURITY_REMOTE
       value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
   configMaps:

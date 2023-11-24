@@ -1,6 +1,6 @@
 global:
+  mongo: "mongodb://mongo:27017/audience"
   hosts:
-    mongo: <change me>
     filex: <change me>
 
   storage:
@@ -113,14 +113,14 @@ global:
     requests:
       memory: 256Mi
       cpu: 300m
-#  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
-#  podSecurityContext:
-#    enabled: true
-#    fsGroup: 1001
-#  containerSecurityContext:
-#    enabled: true
-#    runAsUser: 1001
-#    runAsNonRoot: true
+  #  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
+  #  podSecurityContext:
+  #    enabled: true
+  #    fsGroup: 1001
+  #  containerSecurityContext:
+  #    enabled: true
+  #    runAsUser: 1001
+  #    runAsNonRoot: true
 
 
   existingSecret: ""
@@ -137,8 +137,8 @@ common:
   envVars:
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
-    - name: MONGO_HOST
-      value: "{{ .Values.global.hosts.mongo }}"
+    - name: MONGO_CONNECTION_URL
+      value: "{{ .Values.global.mongo }}"
     - name: HTTP_FILEX_REMOTE
       value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
 
