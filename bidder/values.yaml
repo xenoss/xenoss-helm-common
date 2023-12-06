@@ -136,10 +136,12 @@ global:
   extraVolumeMounts: []
   configMaps: {}
 
-common:
-  containerPorts:
+  extraContainerPorts:
     - name: http
       containerPort: 8080
+
+common:
+  containerPorts:
     - name: httpprivate
       containerPort: 8081
   envVars:
