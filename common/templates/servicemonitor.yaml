@@ -50,5 +50,4 @@ spec:
       {{- if .Values.global.metrics.serviceMonitor.selector }}
       {{- tpl ( .Values.global.metrics.serviceMonitor.selector | toYaml ) $ | nindent 6 }}
       {{- end }}
-      app.kubernetes.io/component: metrics
 {{- end }}
