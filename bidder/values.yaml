@@ -73,8 +73,12 @@ global:
   metrics:
     enabled: true
     serviceMonitor:
+      enabled: false
+    podMonitor:
       enabled: true
       port: httpprivate
+      labels:
+        a: b
   service:
     enabled: false
 
@@ -122,13 +126,13 @@ global:
     requests:
       memory: 256Mi
       cpu: 300m
-#  podSecurityContext:
-#    enabled: true
-#    fsGroup: 1001
-#  containerSecurityContext:
-#    enabled: true
-#    runAsUser: 1001
-#    runAsNonRoot: true
+  #  podSecurityContext:
+  #    enabled: true
+  #    fsGroup: 1001
+  #  containerSecurityContext:
+  #    enabled: true
+  #    runAsUser: 1001
+  #    runAsNonRoot: true
 
 
   existingSecret: ""

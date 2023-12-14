@@ -178,6 +178,23 @@ global:
       honorLabels: false
       jobLabel: ""
 
+    podMonitor:
+      enabled: false
+      port: metrics
+      podMetricsEndpoints:
+        - path: /metrics
+      path: ""
+      namespace: ""
+      interval: 30s
+      scrapeTimeout: ""
+      ##   scrapeTimeout: 30s
+      labels: {}
+      selector: {}
+      relabelings: []
+      metricRelabelings: []
+      honorLabels: false
+      jobLabel: ""
+
   service:
     enabled: false
     type: ClusterIP
