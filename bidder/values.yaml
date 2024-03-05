@@ -9,6 +9,7 @@ global:
   hosts:
     memcached: "<change me>"
     missioncontrol: "<change me>"
+    campaigncontrol: "<change me>"
     aerospike: "<change me>"
     logger: "<change me>"
     bidder:
@@ -96,7 +97,7 @@ global:
   args: []
 
   livenessProbe:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 60
     timeoutSeconds: 5
     periodSeconds: 10
     failureThreshold: 6
@@ -161,6 +162,8 @@ common:
       value: "{{ .Values.global.hosts.memcached }}"
     - name: HTTP_MC_REMOTE
       value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
+    - name: HTTP_CC_REMOTE
+      value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
     - name: MESSAGE_SERVER_HOST
       value: "{{ .Values.global.hosts.missioncontrol }}"
     - name: MESSAGE_CLIENT_LOGGING_PERSISTENCE_DIRECTORY

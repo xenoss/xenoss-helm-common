@@ -2,7 +2,8 @@ global:
   mongo: "mongodb://mongo:27017/missioncontrol"
   cookie_domain: <change me>
   hosts:
-    campaigncontrol: <change me>
+    account: "<change me>"
+    missioncontrol: "<change me>"
   exchanges:
     configmap:
       name: ""
@@ -42,7 +43,7 @@ global:
   statefulset:
     replicaCount: 1
     enabled: true
-  nameOverride: missioncontrol
+  nameOverride: campaigncontrol
   fullnameOverride: ""
   commonAnnotations: {}
   commonLabels: {}
@@ -61,19 +62,23 @@ global:
     enabled: true
     clusterIP: None
     ports:
+      http: 8080
       httpprivate: 8081
     ## Node ports to expose
     nodePorts:
       http: ""
       httpprivate: ""
     extraPorts:
+      - name: http
+        port: 8080
+        targetPort: http
       - name: httpprivate
         port: 8081
         targetPort: httpprivate
 
   image:
     registry: docker.xenoss.io
-    repository: "xenoss-missioncontrol"
+    repository: "xenoss-campaigncontrol"
     tag: "XXX"
     digest: ""
     pullPolicy: IfNotPresent
@@ -120,6 +125,8 @@ global:
 
 common:
   containerPorts:
+    - name: http
+      containerPort: 8080
     - name: httpprivate
       containerPort: 8081
   envVars:
@@ -129,8 +136,10 @@ common:
       value: "{{ .Values.global.logs.loglevel }}"
     - name: MONGO_CONNECTION_URL
       value: "{{ .Values.global.mongo }}"
-    - name: HTTP_CC_REMOTE
-      value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
+    - name: HTTP_SECURITY_REMOTE
+      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
+    - name: HTTP_MC_REMOTE
+      value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
   configMaps:
     default:
       enabled: true
@@ -141,18 +150,12 @@ common:
     - name: "{{ include \"common.fullname\" $ }}"
       configMap:
         name: "{{ include \"common.fullname\" $ }}"
-    - name: "{{ .Values.global.exchanges.configmap.name }}"
-      configMap:
-        name: "{{ .Values.global.exchanges.configmap.name }}"
   volumeMounts:
     - name: "{{ include \"common.fullname\" $ }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/vm.options
+      mountPath: /opt/xenoss-campaigncontrol/conf/vm.options
       subPath: vm.options
       readOnly: true
     - name: "{{ include \"common.fullname\" $ }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/logback.xml
+      mountPath: /opt/xenoss-campaigncontrol/conf/logback.xml
       subPath: logback.xml
       readOnly: true
-    - name: "{{ .Values.global.exchanges.configmap.name }}"
-      mountPath: /opt/xenoss-missioncontrol/conf/exchanges.yaml
-      subPath: exchanges.yaml
