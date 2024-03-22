@@ -1,4 +1,4 @@
-{{- define "hadoop.configuration" -}}
+{{- define "filesystem.configuration" -}}
   {{- $conf := merge (dict) .Values.global.storage.configuration -}}
   {{- if hasKey .Values.global.storage "configurationFrom" }}
     {{- range .Values.global.storage.configurationFrom.secret.properties }}
@@ -8,7 +8,7 @@
   json({{ $conf | toJson }})
 {{- end -}}
 
-{{- define "hadoop.env" -}}
+{{- define "filesystem.env" -}}
   {{- if hasKey .Values.global.storage "configurationFrom" }}
     {{- range .Values.global.storage.configurationFrom.secret.properties }}
 - name: {{ .env | quote }}

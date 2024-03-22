@@ -17,21 +17,22 @@ global:
       host: clickhouse
 
   storage:
-    type: S3A
     configurationFrom:
       secret:
         name: "aws-auth"
         properties:
           - source: access-key
             env: AWS_ACCESS_KEY_ID
-            target: fs.s3a.access.key
+            target: fs.s3.jclouds.identity
           - source: secret-access-key
             env: AWS_SECRET_ACCESS_KEY
-            target: fs.s3a.secret.key
+            target: fs.s3.jclouds.credential
     configuration:
-      fs.s3a.endpoint: https://s3.us-east-1.amazonaws.com
-      fs.s3a.path.style.access: true
-      fs.s3a.bucket: test-logs
+      fs.s3.jclouds.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3.jclouds.s3.virtual-host-buckets: false
+
+      fs.default.jclouds.scheme: s3
+      fs.default.jclouds.container: test-logs
 
   jvm:
     options: |
@@ -61,6 +62,8 @@ global:
         <logger name="oap.concurrent" level="WARN"/>
         <logger name="javax.management" level="ERROR" />
         <logger name="net.rubyeye.xmemcached" level="WARN" />
+        <logger name="org.jclouds" level="WARN"/>
+        <logger name="jclouds" level="WARN"/>
       
         <root level="${APP_LOGGING_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
@@ -175,11 +178,9 @@ common:
     - name: CLICKHOUSE_DATABASE
       value: {{ .Values.global.instance.clickhouse.database }}
 
-    - name: UPLOADER_HADOOP_FILESYSTEM_TYPE
-      value: {{ .Values.global.storage.type }}
-    - name: UPLOADER_HADOOP_CONFIGURATION
-      value: {{ include "hadoop.configuration" . | quote }}
-    {{- include "hadoop.env" . }}
+    - name: UPLOADER_FILESYSTEM_CONFIGURATION
+      value: {{ include "filesystem.configuration" . | quote }}
+    {{- include "filesystem.env" . }}
 
   configMaps:
     default:
