@@ -1,13 +1,13 @@
 annotations:
   category: Infrastructure
 apiVersion: v2
-appVersion: 0.0.2
+appVersion: 1.0.0
 dependencies:
   - name: common
     repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
-    version: 1.x.x
+    version: 2.0.0
 home: https://xenoss.com
 name: logger
 sources:
   - https://github.com/xenoss/xenoss.logger
-version: 0.0.2
+version: 1.0.0
