@@ -154,12 +154,10 @@ common:
     - name: httpprivate
       containerPort: 8081
   envVars:
-    {{- if .Values.global.modules.frequency_capping.enabled }}
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
-      value: "true"
+      value: "{{ .Values.global.modules.frequency_capping.enabled }}"
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING_USER_PROFILE_ID_PATH
       value: "{{ .Values.global.modules.frequency_capping.user_profile_id_path }}"
-    {{- end }}
     - name: TRAFFIC_OFF
       value: "false"
     - name: APP_LOGGING_LEVEL
