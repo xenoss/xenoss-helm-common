@@ -1,4 +1,7 @@
 global:
+  modules:
+    frequency_capping:
+      enabled: false
   mongo: "mongodb://mongo:27017/missioncontrol"
   cookie_domain: <change me>
   hosts:
@@ -130,6 +133,8 @@ common:
     - name: httpprivate
       containerPort: 8081
   envVars:
+    - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
+      value: "{{ .Values.global.modules.frequency_capping.enabled }}"
     - name: COOKIE_DOMAIN
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
