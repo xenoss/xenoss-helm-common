@@ -153,7 +153,7 @@ common:
       containerPort: 8081
   envVars:
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
-      value: "{{ .Values.global,modules.frequency_capping }}"
+      value: "{{ .Values.global.modules.frequency_capping }}"
     - name: TRAFFIC_OFF
       value: "false"
     - name: APP_LOGGING_LEVEL
