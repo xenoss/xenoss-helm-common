@@ -1,4 +1,8 @@
 global:
+  smtp:
+    host: <change me>
+    port: <change me>
+    tls: true
   cookie_domain: <change me>
   selfRegistrationEnabled: false
   throttle_login_delay: 5s
@@ -111,6 +115,13 @@ common:
       containerPort: 8081
 
   envVars:
+    - name: MAIL_HOST
+      value: "{{ .Values.global.smtp.host }}"
+    - name: MAIL_PORT
+      value: "{{ .Values.global.smtp.port }}"
+    - name: MAIL_TLS
+      value: "{{ .Values.global.smtp.tls }}"
+
     - name: COOKIE_DOMAIN
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
