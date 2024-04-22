@@ -23,16 +23,16 @@ global:
         properties:
           - source: access-key
             env: AWS_ACCESS_KEY_ID
-            target: fs.s3.jclouds.identity
+            target: fs.s3.clouds.identity
           - source: secret-access-key
             env: AWS_SECRET_ACCESS_KEY
-            target: fs.s3.jclouds.credential
+            target: fs.s3.clouds.credential
     configuration:
-      fs.s3.jclouds.endpoint: https://s3.us-east-1.amazonaws.com
-      fs.s3.jclouds.s3.virtual-host-buckets: false
+      fs.s3.clouds.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3.clouds.s3.virtual-host-buckets: false
 
-      fs.default.jclouds.scheme: s3
-      fs.default.jclouds.container: test-logs
+      fs.default.clouds.scheme: s3
+      fs.default.clouds.container: test-logs
 
   jvm:
     options: |

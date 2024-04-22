@@ -178,13 +178,13 @@ common:
       value: "{{ .Values.global.messages.persistence_directory }}"
     - name: AEROSPIKE_HOSTS
       value: "{{ .Values.global.hosts.aerospike }}"
-    - name: AEROSPIKE_READER_READ_TIMEOUT
+    - name: AEROSPIKE_READ_TIMEOUT
       value: "{{ .Values.global.aerospike.readTimeout }}"
-    - name: AEROSPIKE_READER_BATCH_TIMEOUT
+    - name: AEROSPIKE_BATCH_TIMEOUT
       value: "{{ .Values.global.aerospike.readBatchTimeout }}"
-    - name: AEROSPIKE_READER_WRITE_TIMEOUT
+    - name: AEROSPIKE_WRITE_TIMEOUT
       value: "{{ .Values.global.aerospike.writeTimeout }}"
-    - name: AEROSPIKE_READER_CONNECTION_TIMEOUT
+    - name: AEROSPIKE_CONNECTION_TIMEOUT
       value: "{{ .Values.global.aerospike.connectionTimeout }}"
     - name: LOGGING_HOST
       value: "{{ .Values.global.hosts.logger }}"
