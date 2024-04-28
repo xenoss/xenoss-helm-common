@@ -4,11 +4,22 @@ global:
     filex: <change me>
 
   storage:
-    type: S3A
+    configurationFrom:
+      secret:
+        name: "aws-auth"
+        properties:
+          - source: access-key
+            env: AWS_ACCESS_KEY_ID
+            target: fs.s3.clouds.identity
+          - source: secret-access-key
+            env: AWS_SECRET_ACCESS_KEY
+            target: fs.s3.clouds.credential
     configuration:
-      fs.s3a.endpoint: s3aa://s3-website.us-east-1.amazonaws.com/test-bucket
-      fs.s3a.access.key: <access key>
-      fs.s3a.secret.key: <security key>
+      fs.s3.clouds.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3.clouds.s3.virtual-host-buckets: false
+
+      fs.default.clouds.scheme: s3
+      fs.default.clouds.container: test-bucket
 
   jvm:
     options: |
@@ -142,9 +153,7 @@ common:
     - name: HTTP_FILEX_REMOTE
       value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
 
-    - name: HADOOP_FILESYSTEM_TYPE
-      value: "{{ .Values.global.storage.type }}"
-    - name: HADOOP_CONFIGURATION
+    - name: STORAGE_CONFIGURATION
       value: json({{ .Values.global.storage.configuration | toJson }})
   configMaps:
     default:
