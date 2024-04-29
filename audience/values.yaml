@@ -2,6 +2,13 @@ global:
   mongo: "mongodb://mongo:27017/audience"
   hosts:
     filex: <change me>
+    aerospike: "<change me>"
+
+  aerospike:
+    readTimeout: 30
+    readBatchTimeout: 30
+    writeTimeout: 2s
+    connectionTimeout: 10s
 
   storage:
     configurationFrom:
@@ -152,6 +159,16 @@ common:
       value: "{{ .Values.global.mongo }}"
     - name: HTTP_FILEX_REMOTE
       value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
+    - name: AEROSPIKE_HOSTS
+      value: "{{ .Values.global.hosts.aerospike }}"
+    - name: AEROSPIKE_READ_TIMEOUT
+      value: "{{ .Values.global.aerospike.readTimeout }}"
+    - name: AEROSPIKE_BATCH_TIMEOUT
+      value: "{{ .Values.global.aerospike.readBatchTimeout }}"
+    - name: AEROSPIKE_WRITE_TIMEOUT
+      value: "{{ .Values.global.aerospike.writeTimeout }}"
+    - name: AEROSPIKE_CONNECTION_TIMEOUT
+      value: "{{ .Values.global.aerospike.connectionTimeout }}"
 
     - name: STORAGE_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
