@@ -155,6 +155,8 @@ common:
 
     - name: STORAGE_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
+    {{- include "filesystem.env" . }}
+
   configMaps:
     default:
       enabled: true
