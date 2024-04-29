@@ -145,7 +145,7 @@ common:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
     - name: MONGO_CONNECTION_URL
