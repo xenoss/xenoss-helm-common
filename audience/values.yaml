@@ -154,7 +154,7 @@ common:
       value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
 
     - name: STORAGE_CONFIGURATION
-      value: json({{ .Values.global.storage.configuration | toJson }})
+      value: {{ include "filesystem.configuration" . | quote }}
   configMaps:
     default:
       enabled: true
