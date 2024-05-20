@@ -9,7 +9,7 @@ global:
   auth:
     tokens:
       accessSecretExpiration: 2m
-      refreshSecretExpiration: 1m
+      refreshSecretExpiration: 30d
   init:
     admin:
       email: <change me>
