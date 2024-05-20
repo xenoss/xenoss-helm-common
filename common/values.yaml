@@ -94,6 +94,7 @@ global:
     accessModes:
       - ReadWriteOnce
     size: 8Gi
+    storageClassName: ""
     volumeMode: ""
     #    volumeMode: "Filesystem"
     selector: {}

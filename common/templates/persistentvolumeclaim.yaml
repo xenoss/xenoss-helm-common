@@ -12,7 +12,11 @@ spec:
     {{- range $.Values.global.persistence.accessModes }}
     - {{ . | quote }}
     {{- end }}
+  {{- if $.Values.global.persistence.storageClassName }}
+  storageClassName: {{ $.Values.global.persistence.storageClassName }}
+  {{- else }}
   storageClassName: {{ template "common.fullname" . }}-storage
+  {{- end }}
   resources:
     requests:
       storage: {{ $.Values.global.persistence.size | quote }}
