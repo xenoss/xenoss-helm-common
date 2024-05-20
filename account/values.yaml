@@ -8,8 +8,8 @@ global:
   throttle_login_delay: 5s
   auth:
     tokens:
-      accessSecretExpiration = 2m
-      refreshSecretExpiration = 1m
+      accessSecretExpiration: 2m
+      refreshSecretExpiration: 1m
   init:
     admin:
       email: <change me>
