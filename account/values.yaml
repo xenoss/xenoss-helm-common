@@ -6,6 +6,10 @@ global:
   cookie_domain: <change me>
   selfRegistrationEnabled: false
   throttle_login_delay: 5s
+  auth:
+    tokens:
+      accessSecretExpiration = 2m
+      refreshSecretExpiration = 1m
   init:
     admin:
       email: <change me>
@@ -160,6 +164,11 @@ common:
       value: "{{ .Values.global.selfRegistrationEnabled | toString }}"
     - name: THROTTLE_LOGIN_DELAY
       value: "{{ .Values.global.throttle_login_delay }}"
+
+    - name: ACCESS_SECRET_EXPIRATION
+      value: "{{ .Values.global.auth.tokens.accessSecretExpiration }}"
+    - name: REFRESH_SECRET_EXPIRATION
+      value: "{{ .Values.global.auth.tokens.refreshSecretExpiration }}"
   configMaps:
     default:
       enabled: true
