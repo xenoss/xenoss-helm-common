@@ -1,4 +1,4 @@
-{{- if and .Values.global.persistence.enabled ( eq .Values.global.persistence.volumeMode "Filesystem" ) }}
+{{- if and .Values.global.persistence.enabled ( eq .Values.global.persistence.storageClassName "logger-storage" ) }}
 {{- range until (include "commmon.replicaCount" . | int ) }}
 apiVersion: v1
 kind: PersistentVolume

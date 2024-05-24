@@ -94,6 +94,7 @@ global:
     accessModes:
       - ReadWriteOnce
     size: 8Gi
+    # default - {{ template "common.fullname" $ }}-storage
     storageClassName: ""
     volumeMode: ""
     #    volumeMode: "Filesystem"
