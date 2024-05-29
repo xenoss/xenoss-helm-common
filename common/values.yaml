@@ -90,7 +90,7 @@ global:
   persistence:
     enabled: false
     annotations: {}
-    localpath: "/tmp"
+    localpath: ""
     accessModes:
       - ReadWriteOnce
     size: 8Gi
