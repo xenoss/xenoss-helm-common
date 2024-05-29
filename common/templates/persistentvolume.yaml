@@ -1,4 +1,4 @@
-{{- if and .Values.global.persistence.enabled ( ne ( eq .Values.global.persistence.localpath "" ) ) }}
+{{- if and .Values.global.persistence.enabled ( ne .Values.global.persistence.localpath "" ) }}
 {{- range until (include "commmon.replicaCount" . | int ) }}
 apiVersion: v1
 kind: PersistentVolume
