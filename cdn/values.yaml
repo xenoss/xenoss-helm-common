@@ -1,4 +1,6 @@
 global:
+  hosts:
+    account: "<change me>"
   storage:
     configurationFrom:
       secret:
@@ -157,6 +159,8 @@ common:
   envVars: |
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
+    - name: HTTP_SECURITY_REMOTE
+      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
     - name: FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
     {{- include "filesystem.env" . }}
