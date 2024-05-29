@@ -157,6 +157,8 @@ common:
   envVars: |
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
+    - name: FILESYSTEM_CONFIGURATION
+      value: {{ include "filesystem.configuration" . | quote }}
     {{- include "filesystem.env" . }}
 
   configMaps:
