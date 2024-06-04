@@ -159,7 +159,7 @@ common:
     - name: DEFAULT_SYSTEM_ADMIN_ROLES
       value: "json({{ .Values.global.init.admin.roles | toJson }})"
     - name: DEFAULT_SYSTEM_ADMIN_READ_ONLY
-      value: "{{ .Values.global.init.admin.readonlu | toString }}"
+      value: "{{ .Values.global.init.admin.readonly | toString }}"
 
     - name: DEFAULT_ORGANIZATION_ID
       value: "{{ .Values.global.init.organization.id }}"
