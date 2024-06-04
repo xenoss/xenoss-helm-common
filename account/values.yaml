@@ -199,3 +199,6 @@ common:
       mountPath: /opt/xenoss-account/conf/logback.xml
       subPath: logback.xml
       readOnly: true
+
+  podAnnotations:
+    reloader.stakater.com/auto: "true"
