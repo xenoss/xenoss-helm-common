@@ -1,4 +1,7 @@
 global:
+  profiles:
+    bs:
+#      cron "* * * 3 * ? *"
   clickhouse:
     database: test
     host: clickhouse
@@ -93,6 +96,11 @@ common:
       value: "{{ .Values.global.clickhouse.host }}"
     - name: CLICKHOUSE_DATABASE
       value: "{{ .Values.global.clickhouse.database }}"
+
+    {{- if .Values.global.bs.cron }}
+    - name: BID_SHADING_CRON
+      value: "{{ .Values.global.bs.cron }}"
+    {{- end }}
   configMaps:
     default:
       enabled: true
