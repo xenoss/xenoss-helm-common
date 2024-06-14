@@ -2,7 +2,6 @@ global:
   profiles:
     bs:
       cron: ""
-#      cron "* * * 3 * ? *"
   clickhouse:
     database: test
     host: clickhouse
@@ -89,7 +88,7 @@ common:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
 
