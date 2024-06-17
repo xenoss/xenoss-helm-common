@@ -85,6 +85,8 @@ global:
   metrics:
     enabled: true
     serviceMonitor:
+      enabled: false
+    podMonitor:
       enabled: true
       port: httpprivate
   image:
