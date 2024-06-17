@@ -16,6 +16,8 @@ metadata:
   annotations: {{- tpl (  .Values.global.commonAnnotations | toYaml ) $ | nindent 4 }}
   {{- end }}
 spec:
+  attachMetadata:
+    node: true
   {{- if .Values.global.metrics.podMonitor.jobLabel }}
   jobLabel: {{ .Values.global.metrics.podMonitor.jobLabel }}
   {{- end }}
