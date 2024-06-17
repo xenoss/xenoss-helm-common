@@ -1,7 +1,7 @@
 annotations:
   category: Infrastructure
 apiVersion: v2
-appVersion: 1.0.3
+appVersion: 1.0.4
 dependencies:
   - name: common
     repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
@@ -10,4 +10,4 @@ home: https://xenoss.com
 name: bidder
 sources:
   - https://github.com/xenoss/xenoss.dsp
-version: 1.0.3
+version: 1.0.4

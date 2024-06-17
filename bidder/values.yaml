@@ -82,8 +82,6 @@ global:
     podMonitor:
       enabled: true
       port: httpprivate
-      labels:
-        a: b
   service:
     enabled: false
 
