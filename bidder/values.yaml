@@ -1,4 +1,5 @@
 global:
+  region: unknown
   modules:
     frequency_capping:
       enabled: false
@@ -190,6 +191,8 @@ common:
       value: "{{ .Values.global.hosts.bidder.impression }}"
     - name: BIDDER_EVENT_HOST
       value: "{{ .Values.global.hosts.bidder.event }}"
+    - name: REGION
+      value: "{{ .Values.global.region }}"
   configMaps:
     default:
       enabled: true
