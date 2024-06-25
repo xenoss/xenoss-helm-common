@@ -3,6 +3,10 @@ global:
     smtp:
       host: <change me>
       port: <change me>
+      authenticatorFrom:
+#        secret: <change me>
+        usernameKey: smtp_login
+        passwordKey: smtp_login
       tls: true
     fromPersonal: <change me>
     fromEmail: <change me>
@@ -124,13 +128,25 @@ common:
     - name: httpprivate
       containerPort: 8081
 
-  envVars:
+  envVars: |
     - name: MAIL_HOST
       value: "{{ .Values.global.mail.smtp.host }}"
     - name: MAIL_PORT
       value: "{{ .Values.global.mail.smtp.port }}"
     - name: MAIL_TLS
       value: "{{ .Values.global.mail.smtp.tls }}"
+    {{- if .Values.global.mail.smtp.authenticatorFrom.secret }}
+    - name: MAIL_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.global.mail.smtp.authenticatorFrom.secret }}"
+          key: "{{ .Values.global.mail.smtp.authenticatorFrom.usernameKey }}"
+    - name: MAIL_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.global.mail.smtp.authenticatorFrom.secret }}"
+          key: "{{ .Values.global.mail.smtp.authenticatorFrom.passwordKey }}"
+    {{- end }}
     - name: MAIL_FROM_PERSONAL
       value: "{{ .Values.global.mail.fromPersonal }}"
     - name: MAIL_FROM_EMAIL
