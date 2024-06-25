@@ -4,7 +4,7 @@ global:
       host: <change me>
       port: <change me>
       authenticatorFrom:
-#        secret: <change me>
+        #        secret: <change me>
         usernameKey: smtp_login
         passwordKey: smtp_login
       tls: true
@@ -130,73 +130,74 @@ common:
 
   envVars: |
     - name: MAIL_HOST
-      value: "{{ .Values.global.mail.smtp.host }}"
+      value: {{ .Values.global.mail.smtp.host | quote }}
     - name: MAIL_PORT
-      value: "{{ .Values.global.mail.smtp.port }}"
+      value: {{ .Values.global.mail.smtp.port | quote }}
     - name: MAIL_TLS
-      value: "{{ .Values.global.mail.smtp.tls }}"
+      value: {{ .Values.global.mail.smtp.tls | quote }}
     {{- if .Values.global.mail.smtp.authenticatorFrom.secret }}
     - name: MAIL_USERNAME
       valueFrom:
         secretKeyRef:
-          name: "{{ .Values.global.mail.smtp.authenticatorFrom.secret }}"
-          key: "{{ .Values.global.mail.smtp.authenticatorFrom.usernameKey }}"
+          name: {{ .Values.global.mail.smtp.authenticatorFrom.secret | quote }}
+          key: {{ .Values.global.mail.smtp.authenticatorFrom.usernameKey | quote }}
     - name: MAIL_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: "{{ .Values.global.mail.smtp.authenticatorFrom.secret }}"
-          key: "{{ .Values.global.mail.smtp.authenticatorFrom.passwordKey }}"
+          name: {{ .Values.global.mail.smtp.authenticatorFrom.secret | quote }}
+          key: {{ .Values.global.mail.smtp.authenticatorFrom.passwordKey | quote }}
     {{- end }}
     - name: MAIL_FROM_PERSONAL
-      value: "{{ .Values.global.mail.fromPersonal }}"
+      value: {{ .Values.global.mail.fromPersonal | quote }}
     - name: MAIL_FROM_EMAIL
-      value: "{{ .Values.global.mail.fromEmail }}"
+      value: {{ .Values.global.mail.fromEmail | quote }}
     - name: ACCOUNT_CONFIRM_URL
-      value: "{{ .Values.global.mail.confirmUrl }}"
+      value: {{ .Values.global.mail.confirmUrl | quote }}
 
     - name: COOKIE_DOMAIN
-      value: "{{ .Values.global.cookie_domain }}"
+      value: {{ .Values.global.cookie_domain | quote }}
     - name: APP_LOGGING_LEVEL
-      value: "{{ .Values.global.logs.loglevel }}"
+      value: {{ .Values.global.logs.loglevel | quote }}
     - name: MONGO_CONNECTION_URL
-      value: "{{ .Values.global.mongo }}"
+      value: {{ .Values.global.mongo | quote }}
 
     - name: DEFAULT_SYSTEM_ADMIN_EMAIL
-      value: "{{ .Values.global.init.admin.email }}"
+      value: {{ .Values.global.init.admin.email | quote }}
     - name: DEFAULT_SYSTEM_ADMIN_EMAIL
-      value: "{{ .Values.global.init.admin.email }}"
+      value: {{ .Values.global.init.admin.email | quote }}
     - name: DEFAULT_SYSTEM_ADMIN_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: "{{ .Values.global.init.admin.password.secret.name | default ( printf \"%s-admin\" ( include \"common.fullname\" . ) ) }}"
+          name: {{ .Values.global.init.admin.password.secret.name | default ( printf "%s-admin" ( include "common.fullname" . ) ) | quote }}
           key: admin-password
     - name: DEFAULT_SYSTEM_ADMIN_FIRST_NAME
-      value: "{{ .Values.global.init.admin.firstname }}"
+      value: {{ .Values.global.init.admin.firstname | quote }}
     - name: DEFAULT_SYSTEM_ADMIN_LAST_NAME
-      value: "{{ .Values.global.init.admin.lastname }}"
+      value: {{ .Values.global.init.admin.lastname | quote }}
     - name: DEFAULT_SYSTEM_ADMIN_ROLES
-      value: "json({{ .Values.global.init.admin.roles | toJson }})"
+      value: json({{ .Values.global.init.admin.roles | toJson }})
     - name: DEFAULT_SYSTEM_ADMIN_READ_ONLY
-      value: "{{ .Values.global.init.admin.readonly | toString }}"
+      value: {{ .Values.global.init.admin.readonly | toString | quote }}
 
     - name: DEFAULT_ORGANIZATION_ID
-      value: "{{ .Values.global.init.organization.id }}"
+      value: {{ .Values.global.init.organization.id | quote }}
     - name: DEFAULT_ORGANIZATION_NAME
-      value: "{{ .Values.global.init.organization.name }}"
+      value: {{ .Values.global.init.organization.name | quote }}
     - name: DEFAULT_ORGANIZATION_DESCRIPTION
-      value: "{{ .Values.global.init.organization.description }}"
+      value: {{ .Values.global.init.organization.description | quote }}
     - name: DEFAULT_ORGANIZATION_READ_ONLY
-      value: "{{ .Values.global.init.organization.readonly | toString }}"
+      value: {{ .Values.global.init.organization.readonly | toString | quote }}
 
     - name: SELF_REGISTRATION_ENABLED
-      value: "{{ .Values.global.selfRegistrationEnabled | toString }}"
+      value: {{ .Values.global.selfRegistrationEnabled | toString | quote }}
     - name: THROTTLE_LOGIN_DELAY
-      value: "{{ .Values.global.throttle_login_delay }}"
+      value: {{ .Values.global.throttle_login_delay | quote }}
 
     - name: ACCESS_SECRET_EXPIRATION
-      value: "{{ .Values.global.auth.tokens.accessSecretExpiration }}"
+      value: {{ .Values.global.auth.tokens.accessSecretExpiration | quote }}
     - name: REFRESH_SECRET_EXPIRATION
-      value: "{{ .Values.global.auth.tokens.refreshSecretExpiration }}"
+      value: {{ .Values.global.auth.tokens.refreshSecretExpiration | quote }}
+
   configMaps:
     default:
       enabled: true
