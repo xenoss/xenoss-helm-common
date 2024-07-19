@@ -2,7 +2,8 @@ global:
   mongo: "mongodb://mongo:27017/audience"
   hosts:
     filex: <change me>
-    aerospike: "<change me>"
+    aerospike: <change me>
+    account: <change me>
 
   aerospike:
     readTimeout: 30
@@ -161,6 +162,8 @@ common:
       value: "{{ .Values.global.mongo }}"
     - name: HTTP_FILEX_REMOTE
       value: "http://{{ .Values.global.hosts.filex }}:8081/remote/"
+    - name: HTTP_SECURITY_REMOTE
+      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
     - name: AEROSPIKE_HOSTS
       value: "{{ .Values.global.hosts.aerospike }}"
     - name: AEROSPIKE_READ_TIMEOUT
