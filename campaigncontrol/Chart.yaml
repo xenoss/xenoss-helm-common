@@ -1,13 +1,13 @@
 annotations:
   category: Infrastructure
 apiVersion: v2
-appVersion: 1.0.2
+appVersion: 1.0.3
 dependencies:
   - name: common
     repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
-    version: 2.0.4
+    version: 2.0.5
 home: https://xenoss.com
 name: campaigncontrol
 sources:
   - https://github.com/xenoss/xenoss.dsp
-version: 1.0.2
+version: 1.0.3
