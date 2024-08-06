@@ -30,8 +30,9 @@ global:
   pools:
     requestWorkers: 100
   jvm:
+    heap: 800M
     options: |
-      -Xmx800M
+      -Xmx{{ .Values.global.jvm.heap }}
       -Xss228k
       -XX:+UseG1GC
       -XX:+UseGCOverheadLimit
@@ -197,7 +198,7 @@ common:
     default:
       enabled: true
       files:
-        vm.options: "{{ .Values.global.jvm.options }}"
+        vm.options: "{{ include \"common.tpl\" ( dict \"Template\" .Values.global.jvm.options \"Root\" $ ) }}"
         logback.xml: "{{ .Values.global.logs.configuration }}"
   volumes:
     - name: "{{ .Values.global.exchanges.configmap.name }}"
