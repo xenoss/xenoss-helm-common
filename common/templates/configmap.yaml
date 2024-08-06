@@ -21,7 +21,8 @@ metadata:
 data:
 {{- range $key, $value := $config.files }}
   {{ tpl $key $ }}: |
-{{ tpl $value $ | indent 4 }}
+{{- $data := ( include "common.tpl" ( dict "Template" $value "Root" $ ) ) }}
+{{ $data | indent 4 }}
 {{- end }}
 
 {{- end }}
