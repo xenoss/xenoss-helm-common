@@ -9,6 +9,7 @@ global:
     configmap:
       name: ""
     location: /opt/xenoss-uploader/conf/database-configuration.yaml
+    forceTtlDuration: -1
 
   instance:
     name: default
@@ -179,6 +180,8 @@ common:
       value: {{ .Values.global.instance.clickhouse.host }}
     - name: CLICKHOUSE_DATABASE
       value: {{ .Values.global.instance.clickhouse.database }}
+    - name: CLICKHOUSE_MIGRATION_FORCE_TTL_DURATION
+      value: {{ .Values.global.databaseconfiguration.forceTtlDuration }}
 
     - name: UPLOADER_FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
