@@ -7,6 +7,9 @@ global:
   finisher:
     cron: "0 * * * * ? *"
     safe_interval: 30s
+    priority_by_type: {}
+#      bids: 100
+#      impressions: 10
   file_pattern:
     default: "<YEAR>-<MONTH>/<DAY>/<LOG_TYPE>_v<LOG_VERSION>_<SERVER_HOST>-<YEAR>-<MONTH>-<DAY>-<HOUR>-<INTERVAL>.tsv.gz"
     types: {}
@@ -192,6 +195,8 @@ common:
       value: {{ .Values.global.file_pattern.default }}
     - name: FILE_PATTERN_BY_TYPE
       value: json({{ .Values.global.file_pattern.types | toJson }})
+    - name: FINISHER_PRIORITY_BY_TYPE
+      value: json({{ .Values.global.finisher.priority_by_type | toJson }})
     - name: BUCKETS_PER_HOUR
       value: {{ div 60 .Values.global.log_interval_minutes | quote }}
     - name: UPLOADER_CRON
