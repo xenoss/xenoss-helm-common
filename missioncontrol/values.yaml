@@ -148,7 +148,7 @@ common:
   containerPorts:
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
       value: "{{ .Values.global.modules.frequency_capping.enabled }}"
     - name: COOKIE_DOMAIN
@@ -163,6 +163,7 @@ common:
       value: "{{ .Values.global.storage.predict.url }}"
     - name: FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
+    {{- include "filesystem.env" . }}
 
   configMaps:
     default:
