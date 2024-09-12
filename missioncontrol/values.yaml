@@ -150,7 +150,7 @@ common:
       containerPort: 8081
   envVars:
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
-      value: {{ .Values.global.modules.frequency_capping.enabled | quote }}
+      value: "{{ .Values.global.modules.frequency_capping.enabled }}"
     - name: COOKIE_DOMAIN
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
