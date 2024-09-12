@@ -9,6 +9,27 @@ global:
   exchanges:
     configmap:
       name: ""
+
+  storage:
+    predict:
+      url: s3://<change me>/predict-{TIMESTAMP}.tgz
+    configurationFrom:
+      secret:
+        name: "aws-auth"
+        properties:
+          - source: access-key
+            env: AWS_ACCESS_KEY_ID
+            target: fs.s3.clouds.identity
+          - source: secret-access-key
+            env: AWS_SECRET_ACCESS_KEY
+            target: fs.s3.clouds.credential
+    configuration:
+      fs.s3.clouds.endpoint: https://s3.us-east-1.amazonaws.com
+      fs.s3.clouds.s3.virtual-host-buckets: false
+
+      fs.default.clouds.scheme: s3
+      fs.default.clouds.container: test-logs
+
   jvm:
     options: |
       -Xmx800M
@@ -129,15 +150,20 @@ common:
       containerPort: 8081
   envVars:
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
-      value: "{{ .Values.global.modules.frequency_capping.enabled }}"
+      value: {{ .Values.global.modules.frequency_capping.enabled | quote }}
     - name: COOKIE_DOMAIN
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
-      value: "{{ .Values.global.logs.loglevel }}"
+      value: {{ .Values.global.logs.loglevel | quote }}
     - name: MONGO_CONNECTION_URL
       value: "{{ .Values.global.mongo }}"
     - name: HTTP_CC_REMOTE
       value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
+    - name: PREDICT_SERVICE_STORAGE_URL
+      value: {{ .Values.global.storage.predict.url | quote }}
+    - name: FILESYSTEM_CONFIGURATION
+      value: {{ include "filesystem.configuration" . | quote }}
+
   configMaps:
     default:
       enabled: true
