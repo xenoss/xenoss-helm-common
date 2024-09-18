@@ -10,6 +10,19 @@ global:
   exchanges:
     configmap:
       name: ""
+
+  storage:
+    configurationFrom:
+      secret:
+        name: "aws-auth"
+        properties:
+          - source: access-key
+            env: AWS_ACCESS_KEY_ID
+            target: fs.s3.clouds.identity
+          - source: secret-access-key
+            env: AWS_SECRET_ACCESS_KEY
+            target: fs.s3.clouds.credential
+
   jvm:
     heap: 800M
     options: |
@@ -135,7 +148,7 @@ common:
       containerPort: 8080
     - name: httpprivate
       containerPort: 8081
-  envVars:
+  envVars: |
     - name: OAP_BOOT_MODULE_FREQUENCY_CAPPING
       value: "{{ .Values.global.modules.frequency_capping.enabled }}"
     - name: COOKIE_DOMAIN
@@ -148,6 +161,8 @@ common:
       value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
     - name: HTTP_MC_REMOTE
       value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
+    {{- include "filesystem.env" . }}
+
   configMaps:
     default:
       enabled: true
