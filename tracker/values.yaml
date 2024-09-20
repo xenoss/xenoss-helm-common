@@ -1,6 +1,7 @@
 global:
   hosts:
     logger: "<change me>"
+    campaigncontrol: "<change me>"
   datamodel:
     configmap:
       name: ""
@@ -105,6 +106,8 @@ common:
       value: "{{ .Values.global.logs.loglevel }}"
     - name: LOGGING_HOST
       value: "{{ .Values.global.hosts.logger }}"
+    - name: HTTP_CC_REMOTE
+      value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
 
     - name: DATAMODEL_LOCATION
       value: path({{ .Values.global.datamodel.location }})

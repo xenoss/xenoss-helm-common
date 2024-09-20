@@ -1,6 +1,6 @@
 global:
   hosts:
-    campaigncontrol: "<change me>"
+    filex: <change me>
   datamodel:
     configmap:
       name: ""
@@ -166,8 +166,8 @@ common:
   envVars: |
     - name: APP_LOGGING_LEVEL
       value: {{ .Values.global.logs.loglevel | quote }}
-    - name: HTTP_CC_REMOTE
-      value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
+    - name: HTTP_FILEX_REMOTE
+      value: http://{{ .Values.global.hosts.filex }}:8081/remote/
 
     - name: DATAMODEL_LOCATION
       value: path({{ .Values.global.datamodel.location }})
