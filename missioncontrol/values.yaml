@@ -9,6 +9,10 @@ global:
   exchanges:
     configmap:
       name: ""
+  datamodel:
+    configmap:
+      name: ""
+    location: /opt/xenoss-missioncontrol/conf/datamodel.conf
 
   storage:
     predict:
@@ -157,6 +161,8 @@ common:
       value: "{{ .Values.global.cookie_domain }}"
     - name: APP_LOGGING_LEVEL
       value: "{{ .Values.global.logs.loglevel }}"
+    - name: DATAMODEL_PATH
+      value: "path({{ .Values.global.datamodel.location }})"
     - name: MONGO_CONNECTION_URL
       value: "{{ .Values.global.mongo }}"
     - name: HTTP_CC_REMOTE
@@ -177,6 +183,9 @@ common:
     - name: "{{ include \"common.fullname\" $ }}"
       configMap:
         name: "{{ include \"common.fullname\" $ }}"
+    - name: "{{ .Values.global.datamodel.configmap.name }}"
+      configMap:
+        name: "{{ .Values.global.datamodel.configmap.name }}"
     - name: "{{ .Values.global.exchanges.configmap.name }}"
       configMap:
         name: "{{ .Values.global.exchanges.configmap.name }}"
@@ -192,3 +201,6 @@ common:
     - name: "{{ .Values.global.exchanges.configmap.name }}"
       mountPath: /opt/xenoss-missioncontrol/conf/exchanges.yaml
       subPath: exchanges.yaml
+    - name: "{{ .Values.global.datamodel.configmap.name }}"
+      mountPath: "{{ .Values.global.datamodel.location }}"
+      subPath: datamodel.conf
