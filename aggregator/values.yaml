@@ -13,6 +13,9 @@ global:
 
   instance:
     name: default
+    timebased:
+      enabled: false
+      cron: "0 0 1 * * ? *"
     clickhouse:
       database: test
       host: clickhouse
@@ -181,6 +184,10 @@ common:
     - name: CLICKHOUSE_DATABASE
       value: {{ .Values.global.instance.clickhouse.database }}
 
+    - name: ENABLE_AGG_TIMEBASED
+      value: "{{ .Values.global.instance.timebased.enabled }}"
+    - name: AGG_TIMEBASED_CRON
+      value: "{{ .Values.global.instance.timebased.cron }}"
     - name: AGGREGATOR_FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
     - name: BUCKETS_PER_HOUR
