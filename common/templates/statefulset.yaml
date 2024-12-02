@@ -31,8 +31,5 @@ spec:
       {{- include "common.podAnnotations" . }}
     spec:
       hostname: {{ template "common.fullname" . }}
-      {{- if .Values.global.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ .Values.global.terminationGracePeriodSeconds }}
-      {{- end }}
 {{- include "pod.content" $ }}
 {{- end }}

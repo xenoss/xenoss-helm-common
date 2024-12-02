@@ -1,4 +1,7 @@
 {{- define "pod.content" -}}
+      {{- if .Values.global.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.global.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- include "common.pullSecrets" $ | nindent 6 }}
       {{- if .Values.global.nodeSelector }}
       nodeSelector: {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
