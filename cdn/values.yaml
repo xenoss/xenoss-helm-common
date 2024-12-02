@@ -134,9 +134,7 @@ global:
 
   resources:
     limits: {}
-    requests:
-      memory: 256Mi
-      cpu: 300m
+    requests: {}
   #  https://stackoverflow.com/questions/62741285/spark-submit-fails-on-kubernetes-eks-with-invalid-null-input-name
   #  podSecurityContext:
   #    enabled: true

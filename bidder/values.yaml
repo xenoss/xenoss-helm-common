@@ -101,16 +101,48 @@ global:
   args: []
 
   livenessProbe:
-    initialDelaySeconds: 60
-    timeoutSeconds: 5
-    periodSeconds: 10
+    periodSeconds: 5
     failureThreshold: 6
     successThreshold: 1
     httpGet:
       path: /healtz
       port: httpprivate
+      scheme: HTTP
 
-  lifecycleHooks: {}
+  readinessProbe:
+    timeoutSeconds: 1
+    periodSeconds: 2
+    failureThreshold: 2
+    successThreshold: 1
+    exec:
+      command:
+        - test
+        - -f
+        - /var/tmp/ready.txt
+
+  startupProbe:
+    failureThreshold: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+    httpGet:
+      path: /healtz
+      port: httpprivate
+      scheme: HTTP
+
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - touch
+          - /var/tmp/ready.txt
+    preStop:
+      exec:
+        command:
+          - bash
+          - -c
+          - rm -f /var/tmp/ready.txt; sleep 90
+
   ##   - name: FOO
   ##     value: "bar"
   extraEnvVarsCM: ""
@@ -128,9 +160,9 @@ global:
 
   resources:
     limits: {}
-    requests:
-      memory: 256Mi
-      cpu: 300m
+    requests: {}
+#      memory: 256Mi
+#      cpu: 300m
   #  podSecurityContext:
   #    enabled: true
   #    fsGroup: 1001
@@ -144,6 +176,7 @@ global:
   extraVolumes: []
   extraVolumeMounts: []
   configMaps: {}
+  terminationGracePeriodSeconds: "120"
 
   extraContainerPorts:
     - name: http

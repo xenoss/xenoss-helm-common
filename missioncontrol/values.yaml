@@ -133,9 +133,7 @@ global:
 
   resources:
     limits: {}
-    requests:
-      memory: 256Mi
-      cpu: 300m
+    requests: {}
   podSecurityContext:
     enabled: true
     fsGroup: 1001
