@@ -63,8 +63,7 @@ global:
         <logger name="oap.concurrent" level="WARN"/>
         <logger name="javax.management" level="ERROR" />
         <logger name="net.rubyeye.xmemcached" level="WARN" />
-        <logger name="org.jclouds" level="WARN"/>
-        <logger name="jclouds" level="WARN"/>
+        <logger name="com.clickhouse" level="WARN"/>
       
         <root level="${APP_LOGGING_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
