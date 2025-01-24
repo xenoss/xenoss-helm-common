@@ -60,12 +60,12 @@ global:
         <logger name="org" level="ERROR"/>
         <logger name="oap.http.Server" level="${OAP_HTTP_SERVER_LOGGING_LEVEL:-WARN}"/>
         <logger name="io.undertow" level="WARN"/>
+        <logger name="io.netty" level="WARN"/>
         <logger name="oap.application.remote" level="WARN"/>
         <logger name="oap.concurrent" level="WARN"/>
         <logger name="javax.management" level="ERROR" />
         <logger name="net.rubyeye.xmemcached" level="WARN" />
-        <logger name="org.jclouds" level="WARN"/>
-        <logger name="jclouds" level="WARN"/>
+        <logger name="software" level="WARN" />
       
         <root level="${APP_LOGGING_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
