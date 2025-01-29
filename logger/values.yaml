@@ -189,7 +189,7 @@ common:
       value: /opt/xenoss-logger/logs
 
     - name: UPLOADER_THREADS
-      value: {{ .Values.global.finisher.threads }}
+      value: {{ .Values.global.finisher.threads  | quote }}
     - name: UPLOADER_FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
     - name: FILE_PATTERN
