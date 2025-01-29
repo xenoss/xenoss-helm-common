@@ -5,6 +5,7 @@ global:
       init_delay: 10s
       period: 10s
   finisher:
+    threads: 2
     cron: "0 * * * * ? *"
     safe_interval: 30s
     priority_by_type: {}
@@ -187,6 +188,8 @@ common:
     - name: LOGGER_OUT_DIRECTORY
       value: /opt/xenoss-logger/logs
 
+    - name: UPLOADER_THREADS
+      value: {{ .Values.global.finisher.threads }}
     - name: UPLOADER_FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
     - name: FILE_PATTERN
