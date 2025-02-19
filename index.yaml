@@ -18,6 +18,24 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/account-1.0.8/account-1.0.8.tgz
     version: 1.0.8
+  campaigncontrol:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 1.0.6
+    created: "2025-02-19T17:29:02.43338106Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 9cd48ba52dc120dbd09cda7961d3c4d23cbeb24f6f385cfef2bcbbbe66eef9ca
+    home: https://xenoss.com
+    name: campaigncontrol
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/campaigncontrol-1.0.6/campaigncontrol-1.0.6.tgz
+    version: 1.0.6
   common:
   - annotations:
       category: Infrastructure
@@ -93,4 +111,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-19T17:26:03.718888296Z"
+generated: "2025-02-19T17:29:02.433391289Z"
