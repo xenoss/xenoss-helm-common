@@ -57,4 +57,22 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/tracker-1.0.3/tracker-1.0.3.tgz
     version: 1.0.3
-generated: "2025-02-19T17:20:24.091256831Z"
+  uploader:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 1.0.9
+    created: "2025-02-19T17:23:08.044601748Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 0302e6f2aa085769b3dbc617573cd79d3b3b843587255cabbc00a9556fc6ec4c
+    home: https://xenoss.com
+    name: uploader
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
+    version: 1.0.9
+generated: "2025-02-19T17:23:08.044606737Z"
