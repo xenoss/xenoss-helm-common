@@ -111,6 +111,24 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/missioncontrol-1.1.4/missioncontrol-1.1.4.tgz
     version: 1.1.4
+  reporter:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 1.0.3
+    created: "2025-02-19T17:34:45.087786014Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 59accbd6bdd593a8c5a56a5384598538c9a9e164e786815190f82488ba139165
+    home: https://xenoss.com
+    name: reporter
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/reporter-1.0.3/reporter-1.0.3.tgz
+    version: 1.0.3
   tracker:
   - annotations:
       category: Infrastructure
@@ -147,4 +165,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-19T17:32:51.362969937Z"
+generated: "2025-02-19T17:34:45.087798738Z"
