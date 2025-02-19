@@ -36,6 +36,24 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/aggregator-1.0.6/aggregator-1.0.6.tgz
     version: 1.0.6
+  audience:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 1.0.5
+    created: "2025-02-19T17:46:01.780326446Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 17eacc104bac4120a5546eae0bfce6f3c20990d56883bca7f4623e4fd49dbc92
+    home: https://xenoss.com
+    name: audience
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/audience-1.0.5/audience-1.0.5.tgz
+    version: 1.0.5
   bidder:
   - annotations:
       category: Infrastructure
@@ -219,4 +237,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-19T17:44:02.159611897Z"
+generated: "2025-02-19T17:46:01.780334441Z"
