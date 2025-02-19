@@ -1,26 +1,20 @@
-# Xenoss Common Library Chart
+## Usage
 
-A [Helm Library Chart](https://helm.sh/docs/topics/library_charts/#helm) for grouping common logic between Xenoss charts.
+[Helm](https://helm.sh) must be installed to use the charts.  Please refer to
+Helm's [documentation](https://helm.sh/docs) to get started.
 
-## TL;DR
+Once Helm has been set up correctly, add the repo as follows:
 
-```yaml
-dependencies:
-  - name: common
-    version: 1.x.x
-    repository: https://nexus.xenoss.io/repository/xenoss-helm-oss
-```
+helm repo add <alias> https://xenoss.github.io/xenoss-helm-common
 
-```console
-helm dependency update
-```
+If you had already added this repo earlier, run `helm repo update` to retrieve
+the latest versions of the packages.  You can then run `helm search repo
+<alias>` to see the charts.
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "common.fullname" . }}
-data:
-  myvalue: "Hello World"
-```
+To install the <chart-name> chart:
 
+    helm install my-<chart-name> <alias>/<chart-name>
+
+To uninstall the chart:
+
+    helm uninstall my-<chart-name>
