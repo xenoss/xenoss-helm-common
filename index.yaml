@@ -129,6 +129,24 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/filex-1.0.4/filex-1.0.4.tgz
     version: 1.0.4
+  logger:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 1.0.12
+    created: "2025-02-19T17:44:02.159601017Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 9ab0dd8b75b4fc838f78236a0f2d37a667eb4fdea90ce5c337967eb30d7d2bad
+    home: https://xenoss.com
+    name: logger
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/logger-1.0.12/logger-1.0.12.tgz
+    version: 1.0.12
   missioncontrol:
   - annotations:
       category: Infrastructure
@@ -201,4 +219,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-19T17:41:08.059754984Z"
+generated: "2025-02-19T17:44:02.159611897Z"
