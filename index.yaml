@@ -18,6 +18,26 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/account-1.0.8/account-1.0.8.tgz
     version: 1.0.8
+  aerospike:
+  - apiVersion: v1
+    appVersion: 6.4.0.1.1
+    created: "2025-02-20T15:50:42.665004894Z"
+    description: A Helm chart for Aerospike Server Community Edition on Kubernetes
+    digest: 34e2bacebc745ee273aa65160b08c33a219050c94ea51e98006cc5a49002f565
+    icon: https://avatars0.githubusercontent.com/u/2214313?s=200&v=4
+    maintainers:
+    - email: kesan@aerospike.com
+      name: spkesan
+      url: https://github.com/spkesan
+    name: aerospike
+    sources:
+    - https://github.com/aerospike/aerospike-server.docker
+    - https://github.com/aerospike/aerospike-kubernetes
+    - https://github.com/aerospike/aerospike-kubernetes-init
+    - https://github.com/aerospike/aerospike-prometheus-exporter
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/aerospike-5.6.0/aerospike-5.6.0.tgz
+    version: 5.6.0
   aggregator:
   - annotations:
       category: Infrastructure
@@ -279,4 +299,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-20T15:40:17.082578668Z"
+generated: "2025-02-20T15:50:42.665017989Z"
