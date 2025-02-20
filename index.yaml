@@ -108,6 +108,48 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/cdn-0.0.4/cdn-0.0.4.tgz
     version: 0.0.4
+  clickhouse:
+  - annotations:
+      category: Database
+      images: |
+        - name: clickhouse
+          image: docker.io/bitnami/clickhouse:23.8.2-debian-11-r0
+        - name: os-shell
+          image: docker.io/bitnami/os-shell:11-debian-11-r60
+        - name: zookeeper
+          image: docker.io/bitnami/zookeeper:3.8.2-debian-11-r43
+      licenses: Apache-2.0
+    apiVersion: v2
+    appVersion: 23.8.2
+    created: "2025-02-20T15:40:17.082565363Z"
+    dependencies:
+    - condition: zookeeper.enabled
+      name: zookeeper
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 12.x.x
+    - name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: ClickHouse is an open-source column-oriented OLAP database management
+      system. Use it to boost your database performance while providing linear scalability
+      and hardware efficiency.
+    digest: e4553f8df3a9def33600081e7cbc27690c8e4db7f830d8ddae5a15a6d1a05305
+    home: https://bitnami.com
+    icon: https://bitnami.com/assets/stacks/clickhouse/img/clickhouse-stack-220x234.png
+    keywords:
+    - database
+    - sharding
+    maintainers:
+    - name: VMware, Inc.
+      url: https://github.com/bitnami/charts
+    name: clickhouse
+    sources:
+    - https://github.com/bitnami/charts/tree/main/bitnami/clickhouse
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/clickhouse-4.0.1/clickhouse-4.0.1.tgz
+    version: 4.0.1
   common:
   - annotations:
       category: Infrastructure
@@ -237,4 +279,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-02-19T17:46:01.780334441Z"
+generated: "2025-02-20T15:40:17.082578668Z"
