@@ -1,0 +1,27 @@
+{{- range $pv := .Values.persistenceStorage }}
+{{- if $pv.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $pv.name }}
+  labels:
+    app: {{ template "aerospike.name" $ }}
+    chart: {{ $.Chart.Name }}
+    release: {{ $.Release.Name }}
+    {{- with $.Values.labels }}{{ toYaml . | nindent 4 }}{{ end }}
+    {{- with $.Values.annotations }}
+    annotations: {{- toYaml . | nindent 10 }}
+    {{- end }}
+spec:
+  volumeMode: {{ $pv.volumeMode }}
+  accessModes:
+    - {{ $pv.accessMode | quote }}
+  {{- if hasKey $pv "storageClass" }}
+  storageClassName: {{ $pv.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $pv.size | quote }}
+{{- end }}
+{{- end }}
