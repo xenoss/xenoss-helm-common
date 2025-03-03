@@ -22,6 +22,7 @@ secretMaps: {}
 #     password: "123"
 
 containers: []
+initContainers: []
 
 commonAnnotations: {}
 service:
@@ -229,6 +230,7 @@ global:
     annotations: {}
 
   extraContainers: []
+  extraInitContainers: []
 
   daemonset:
     enabled: false

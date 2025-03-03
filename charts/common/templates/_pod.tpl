@@ -73,6 +73,11 @@
       {{- if $containers }}
       {{- tpl ( $containers | toYaml ) $ | nindent 8 }}
       {{- end }}
+      {{- $initContainers := concat (list) .Values.initContainers .Values.global.extraInitContainers }}
+      {{- if $initContainers }}
+      initContainers:
+      {{- tpl ( $initContainers | toYaml ) $ | nindent 8 }}
+      {{- end }}
       {{- if or .Values.volumes .Values.global.extraVolumes }}
         {{- $volumes := concat (list) .Values.volumes .Values.global.extraVolumes }}
       volumes:
