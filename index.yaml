@@ -78,6 +78,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 1.1.2
+    created: "2025-03-11T11:25:12.73596679Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.8
+    digest: cfcd4e5555c897756a403553eccd4498b373e7798ece2bec2157976f95562247
+    home: https://xenoss.com
+    name: bidder
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/bidder-1.1.2/bidder-1.1.2.tgz
+    version: 1.1.2
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 1.1.1
     created: "2025-02-19T17:41:08.05974788Z"
     dependencies:
@@ -337,4 +354,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-03-03T08:29:16.063964866Z"
+generated: "2025-03-11T11:25:12.735980856Z"
