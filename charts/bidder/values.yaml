@@ -12,6 +12,7 @@ global:
   messages:
     persistence_directory: /opt/xenoss-bidder/messages
   hosts:
+    audience: "<change me>"
     memcached: "<change me>"
     missioncontrol: "<change me>"
     campaigncontrol: "<change me>"
@@ -224,6 +225,8 @@ common:
       value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
     - name: HTTP_CC_REMOTE
       value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
+    - name: HTTP_AUDIENCE_REMOTE
+      value: "http://{{ .Values.global.hosts.audience }}:8081/remote/"
     - name: MESSAGE_SERVER_HOST
       value: "{{ .Values.global.hosts.missioncontrol }}"
     - name: MESSAGE_CLIENT_LOGGING_PERSISTENCE_DIRECTORY
