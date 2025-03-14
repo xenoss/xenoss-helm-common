@@ -163,8 +163,6 @@ common:
 
     - name: DEFAULT_SYSTEM_ADMIN_EMAIL
       value: {{ .Values.global.init.admin.email | quote }}
-    - name: DEFAULT_SYSTEM_ADMIN_EMAIL
-      value: {{ .Values.global.init.admin.email | quote }}
     - name: DEFAULT_SYSTEM_ADMIN_PASSWORD
       valueFrom:
         secretKeyRef:
