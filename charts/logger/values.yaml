@@ -38,8 +38,9 @@ global:
       fs.default.clouds.container: test-bucket
 
   jvm:
+    heap: 128M
     options: |
-      -Xmx128M
+      -Xmx{{ .Values.global.jvm.heap }}
       -Xss228k
       -XX:+UseG1GC
       -XX:+UseGCOverheadLimit
