@@ -5,6 +5,7 @@ global:
   mongo: "mongodb://mongo:27017/missioncontrol"
   cookie_domain: <change me>
   hosts:
+    account: <change me>
     campaigncontrol: <change me>
   exchanges:
     configmap:
@@ -165,6 +166,8 @@ common:
       value: "{{ .Values.global.mongo }}"
     - name: HTTP_CC_REMOTE
       value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
+    - name: HTTP_SECURITY_REMOTE
+      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
     - name: PREDICT_SERVICE_STORAGE_URL
       value: "{{ .Values.global.storage.predict.url }}"
     - name: FILESYSTEM_CONFIGURATION
