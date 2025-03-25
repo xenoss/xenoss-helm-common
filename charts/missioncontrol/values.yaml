@@ -7,6 +7,7 @@ global:
   hosts:
     account: <change me>
     campaigncontrol: <change me>
+    notification: <change me>
   exchanges:
     configmap:
       name: ""
@@ -168,6 +169,8 @@ common:
       value: "http://{{ .Values.global.hosts.campaigncontrol }}:8081/remote/"
     - name: HTTP_SECURITY_REMOTE
       value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
+    - name: HTTP_NOTIFICATION_REMOTE
+      value: "http://{{ .Values.global.hosts.notification }}:8081/remote/"
     - name: PREDICT_SERVICE_STORAGE_URL
       value: "{{ .Values.global.storage.predict.url }}"
     - name: FILESYSTEM_CONFIGURATION

@@ -7,6 +7,7 @@ global:
   hosts:
     account: "<change me>"
     missioncontrol: "<change me>"
+    notification: "<change me>"
   exchanges:
     configmap:
       name: ""
@@ -159,6 +160,8 @@ common:
       value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
     - name: HTTP_MC_REMOTE
       value: "http://{{ .Values.global.hosts.missioncontrol }}:8081/remote/"
+    - name: HTTP_NOTIFICATION_REMOTE
+      value: "http://{{ .Values.global.hosts.notification }}:8081/remote/"
     {{- include "filesystem.env" . }}
 
   configMaps:
