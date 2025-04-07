@@ -61,6 +61,8 @@ global:
       -Dorg.quartz.scheduler.skipUpdateCheck=true
       -Dsun.jnu.encoding=UTF-8
       -Dfile.encoding=UTF-8
+      
+      -Djdk.attach.allowAttachSelf
   logs:
     loglevel: DEBUG
     configuration: |
