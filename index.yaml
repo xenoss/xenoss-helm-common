@@ -199,6 +199,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 0.0.7
+    created: "2025-04-14T17:54:50.798382882Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.8
+    digest: fc2b1ba24d570aef3fa6ee4d74c2addde512a774fda69fa886c9cbfca53af71a
+    home: https://xenoss.com
+    name: cdn
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/cdn-0.0.7/cdn-0.0.7.tgz
+    version: 0.0.7
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 0.0.6
     created: "2025-04-14T09:09:08.241303418Z"
     dependencies:
@@ -524,4 +541,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-04-14T09:09:08.241369331Z"
+generated: "2025-04-14T17:54:50.798427015Z"
