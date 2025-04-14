@@ -9,7 +9,7 @@ global:
           - source: AWS_ACCESS_KEY_ID
             env: AWS_ACCESS_KEY_ID
             target: fs.s3.clouds.identity
-          - source: AWS_ACCESS_KEY_ID
+          - source: AWS_SECRET_ACCESS_KEY
             env: AWS_SECRET_ACCESS_KEY
             target: fs.s3.clouds.credential
     configuration:
