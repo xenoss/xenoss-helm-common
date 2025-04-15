@@ -420,6 +420,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 1.0.15
+    created: "2025-04-15T10:21:57.957709665Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.8
+    digest: b3c87d48fafa70bebca05797494255c5347f4ecaf8dcb237584f217ef2ba4f6f
+    home: https://xenoss.com
+    name: logger
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/logger-1.0.15/logger-1.0.15.tgz
+    version: 1.0.15
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 1.0.14
     created: "2025-03-17T16:52:48.026479786Z"
     dependencies:
@@ -609,4 +626,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-04-15T08:29:14.748110714Z"
+generated: "2025-04-15T10:21:57.957777892Z"
