@@ -455,6 +455,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 1.1.7
+    created: "2025-04-15T07:42:49.701182041Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.8
+    digest: 3cc57b31149d0e9258978243e7394a65ff14f6f9b0a864fe7a08e7933bb94f7e
+    home: https://xenoss.com
+    name: missioncontrol
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/missioncontrol-1.1.7/missioncontrol-1.1.7.tgz
+    version: 1.1.7
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 1.1.6
     created: "2025-03-25T09:58:23.766401759Z"
     dependencies:
@@ -575,4 +592,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-04-15T06:03:24.318988335Z"
+generated: "2025-04-15T07:42:49.701232095Z"
