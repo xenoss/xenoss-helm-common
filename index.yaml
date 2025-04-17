@@ -59,6 +59,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 1.0.7
+    created: "2025-04-17T14:29:23.746043027Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: acf11802520caad86a240e5e4ec86a75a9f3f3fdb5772d4756c95d2b33d1af27
+    home: https://xenoss.com
+    name: aggregator
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/aggregator-1.0.7/aggregator-1.0.7.tgz
+    version: 1.0.7
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 1.0.6
     created: "2025-02-19T17:36:55.573270931Z"
     dependencies:
@@ -612,6 +629,23 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 1.0.10
+    created: "2025-04-17T14:29:23.845404844Z"
+    dependencies:
+    - name: common
+      repository: https://xenoss.github.io/xenoss-helm-common
+      version: 2.0.7
+    digest: 0b22cb198229af9bdde4f392c734fa578d2034d9a68cb86a2e019c64808497ec
+    home: https://xenoss.com
+    name: uploader
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.10/uploader-1.0.10.tgz
+    version: 1.0.10
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 1.0.9
     created: "2025-02-19T17:23:08.044601748Z"
     dependencies:
@@ -626,4 +660,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2025-04-15T10:21:57.957777892Z"
+generated: "2025-04-17T14:29:23.845473082Z"
