@@ -1,7 +1,7 @@
 annotations:
   category: Infrastructure
 apiVersion: v2
-appVersion: 1.0.9
+appVersion: 1.0.10
 dependencies:
   - name: common
     repository: https://xenoss.github.io/xenoss-helm-common
@@ -10,4 +10,4 @@ home: https://xenoss.com
 name: uploader
 sources:
   - https://xenoss.github.io/xenoss-helm-common
-version: 1.0.9
+version: 1.0.10
