@@ -23,7 +23,7 @@ global:
   storage:
     configurationFrom:
       secret:
-        name: {{ .Values.global.cloudStorageSecretName }}
+        name: {{ $.Values.global.cloudStorageSecretName }}
         properties:
           - source: AWS_ACCESS_KEY_ID
             env: AWS_ACCESS_KEY_ID
