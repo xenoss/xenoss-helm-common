@@ -11,3 +11,4 @@ name: logger
 sources:
   - https://xenoss.github.io/xenoss-helm-common
 version: 1.0.16
+
