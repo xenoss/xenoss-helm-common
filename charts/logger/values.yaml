@@ -4,7 +4,6 @@ global:
     refresh:
       init_delay: 10s
       period: 10s
-  cloudStorageSecretName: aws-auth
   finisher:
     threads: 2
     cron: "0 * * * * ? *"
@@ -23,7 +22,7 @@ global:
   storage:
     configurationFrom:
       secret:
-        name: {{ $.Values.global.cloudStorageSecretName }}
+        name: aws-auth
         properties:
           - source: AWS_ACCESS_KEY_ID
             env: AWS_ACCESS_KEY_ID
