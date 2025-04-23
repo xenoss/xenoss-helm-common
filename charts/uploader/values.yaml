@@ -1,18 +1,26 @@
 global:
+  log_interval_minutes: 5
   hosts:
     filex: <change me>
   datamodel:
     configmap:
       name: ""
     location: /opt/xenoss-uploader/conf/datamodel.conf
-  databaseconfiguration:
+  reportingconfiguration:
     configmap:
       name: ""
-    location: /opt/xenoss-uploader/conf/database-configuration.yaml
+    location: /opt/xenoss-uploader/conf/reporting-configuration.yaml
     forceTtlDuration: "-1"
 
   instance:
     name: default
+    aggregator:
+      enabled: false
+    timebased:
+      enabled: false
+      cron: "0 0 1 * * ? *"
+    dmp:
+      enabled: false
     clickhouse:
       database: test
       host: clickhouse
@@ -171,14 +179,27 @@ common:
 
     - name: UPLOADER_NAME
       value: {{ .Values.global.instance.name }}
-    - name: DATABASE_CONFIGURATION_LOCATION
-      value: path({{ .Values.global.databaseconfiguration.location }})
+    - name: REPORTING_CONFIGURATION_LOCATION
+      value: path({{ .Values.global.reportingconfiguration.location }})
     - name: CLICKHOUSE_HOST
       value: {{ .Values.global.instance.clickhouse.host }}
     - name: CLICKHOUSE_DATABASE
       value: {{ .Values.global.instance.clickhouse.database }}
     - name: CLICKHOUSE_MIGRATION_FORCE_TTL_DURATION
-      value: {{ .Values.global.databaseconfiguration.forceTtlDuration | quote }}
+      value: {{ .Values.global.reportingconfiguration.forceTtlDuration | quote }}
+
+    - name: ENABLE_AGG_DEFAULT
+      value: "{{ .Values.global.instance.aggregator.enabled }}"
+    - name: ENABLE_DMP
+      value: "{{ .Values.global.instance.dmp.enabled }}"
+
+    - name: ENABLE_AGG_TIMEBASED
+      value: "{{ .Values.global.instance.timebased.enabled }}"
+    - name: AGG_TIMEBASED_CRON
+      value: "{{ .Values.global.instance.timebased.cron }}"
+
+    - name: BUCKETS_PER_HOUR
+      value: {{ div 60 .Values.global.log_interval_minutes | quote }}
 
     - name: UPLOADER_FILESYSTEM_CONFIGURATION
       value: {{ include "filesystem.configuration" . | quote }}
@@ -194,9 +215,9 @@ common:
     - name: "{{ .Values.global.datamodel.configmap.name }}"
       configMap:
         name: "{{ .Values.global.datamodel.configmap.name }}"
-    - name: "{{ .Values.global.databaseconfiguration.configmap.name }}"
+    - name: "{{ .Values.global.reportingconfiguration.configmap.name }}"
       configMap:
-        name: "{{ .Values.global.databaseconfiguration.configmap.name }}"
+        name: "{{ .Values.global.reportingconfiguration.configmap.name }}"
     - name: "{{ include \"common.fullname\" $ }}"
       configMap:
         name: "{{ include \"common.fullname\" $ }}"
@@ -204,9 +225,9 @@ common:
     - name: "{{ .Values.global.datamodel.configmap.name }}"
       mountPath: "{{ .Values.global.datamodel.location }}"
       subPath: datamodel.conf
-    - name: "{{ .Values.global.databaseconfiguration.configmap.name }}"
-      mountPath: "{{ .Values.global.databaseconfiguration.location }}"
-      subPath: "database-configuration-{{ .Values.global.instance.name }}.yaml"
+    - name: "{{ .Values.global.reportingconfiguration.configmap.name }}"
+      mountPath: "{{ .Values.global.reportingconfiguration.location }}"
+      subPath: "reporting-configuration.yaml"
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-uploader/conf/vm.options
       subPath: vm.options
