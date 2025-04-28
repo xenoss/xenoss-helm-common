@@ -9,7 +9,7 @@ global:
   reportingconfiguration:
     configmap:
       name: ""
-    location: /opt/xenoss-uploader/conf/reporting-configuration.yaml
+    location: /opt/xenoss-uploader/conf/reporting-configuration.conf
     forceTtlDuration: "-1"
 
   instance:
@@ -227,7 +227,7 @@ common:
       subPath: datamodel.conf
     - name: "{{ .Values.global.reportingconfiguration.configmap.name }}"
       mountPath: "{{ .Values.global.reportingconfiguration.location }}"
-      subPath: "reporting-configuration.yaml"
+      subPath: "reporting-configuration.conf"
     - name: "{{ include \"common.fullname\" $ }}"
       mountPath: /opt/xenoss-uploader/conf/vm.options
       subPath: vm.options
