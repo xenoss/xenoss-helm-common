@@ -182,7 +182,7 @@ common:
     default:
       enabled: true
       files:
-        vm.options: "{{ .Values.global.jvm.options }}"
+        vm.options: "{{ include \"common.tpl\" ( dict \"Template\" .Values.global.jvm.options \"Root\" $ ) }}"
         logback.xml: "{{ .Values.global.logs.configuration }}"
   volumes:
     - name: "{{ include \"common.fullname\" $ }}"
