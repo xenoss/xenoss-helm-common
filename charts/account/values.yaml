@@ -35,8 +35,9 @@ global:
       readonly: true
   mongo: "mongodb://mongo:27017/account"
   jvm:
+    heap: 128M
     options: |
-      -Xmx128M
+      -Xmx{{ .Values.global.jvm.heap }}
       -Xss228k
       -XX:+UseG1GC
       -XX:+UseGCOverheadLimit
