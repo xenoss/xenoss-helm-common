@@ -2,6 +2,7 @@ global:
   log_interval_minutes: 5
   hosts:
     filex: <change me>
+    account: <change me>
   datamodel:
     configmap:
       name: ""
@@ -173,6 +174,8 @@ common:
       value: {{ .Values.global.logs.loglevel | quote }}
     - name: HTTP_FILEX_REMOTE
       value: http://{{ .Values.global.hosts.filex }}:8081/remote/
+    - name: HTTP_SECURITY_REMOTE
+      value: "http://{{ .Values.global.hosts.account }}:8081/remote/"
 
     - name: DATAMODEL_LOCATION
       value: path({{ .Values.global.datamodel.location }})
