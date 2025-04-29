@@ -37,8 +37,9 @@ global:
       fs.default.clouds.container: test-logs
 
   jvm:
+    heap: 800M
     options: |
-      -Xmx800M
+      -Xmx{{ .Values.global.jvm.heap }}
       -Xss228k
       -XX:+UseG1GC
       -XX:+UseGCOverheadLimit
