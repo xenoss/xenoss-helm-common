@@ -54,6 +54,12 @@ global:
   imageRegistry: ""
   imagePullSecrets: []
   terminationGracePeriodSeconds: ""
+  nodeSelector: {}
+  tolerations: []
+  # - key: "key"
+  #   operator: "Equal"
+  #   value: "value"
+  #   effect: "NoSchedule"
   extraDeploy: []
   configMaps: {}
   # default:
