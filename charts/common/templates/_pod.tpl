@@ -6,6 +6,9 @@
       {{- if .Values.global.nodeSelector }}
       nodeSelector: {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
       {{- end }}
+      {{- if .Values.global.tolerations }}
+      tolerations: {{- tpl ( .Values.global.tolerations | toYaml ) $ | nindent 8 }}
+      {{- end }}
       {{- if .Values.global.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.global.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
