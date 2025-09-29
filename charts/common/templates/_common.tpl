@@ -20,7 +20,7 @@
 {{- end -}}
 
 {{- define "common.fullname.service" -}}
-{{- include "common.fullname" . }}{{ if eq $.Values.global.service.clusterIP "None" }}-headless{{ end }}
+{{- include "common.fullname" . }}{{ if and (eq $.Values.global.service.clusterIP "None") $.Values.global.service.headlessSuffix }}-headless{{ end }}
 {{- end -}}
 
 {{- define "common.namespace" -}}

@@ -206,6 +206,7 @@ global:
 
   service:
     enabled: false
+    headlessSuffix: true
     type: ClusterIP
     ports: {}
     #    http: 8080
