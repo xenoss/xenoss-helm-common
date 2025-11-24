@@ -43,6 +43,8 @@ global:
   commonLabels: {}
   podAnnotations: {}
   podManagementPolicy: Parallel
+  hostNetwork: ""
+  dnsPolicy: ""
   podSecurityContext:
     enabled: false
   #    fsGroup: 1001

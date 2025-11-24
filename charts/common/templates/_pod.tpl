@@ -1,4 +1,10 @@
 {{- define "pod.content" -}}
+      {{- if .Values.global.hostNetwork }}
+      hostNetwork: {{ .Values.global.hostNetwork }}
+      {{- end }}
+      {{- if .Values.global.dnsPolicy }}
+      hostNetwork: {{ .Values.global.dnsPolicy }}
+      {{- end }}
       {{- if .Values.global.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.global.terminationGracePeriodSeconds }}
       {{- end }}
