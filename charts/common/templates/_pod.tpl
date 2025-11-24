@@ -3,7 +3,7 @@
       hostNetwork: {{ .Values.global.hostNetwork }}
       {{- end }}
       {{- if .Values.global.dnsPolicy }}
-      hostNetwork: {{ .Values.global.dnsPolicy }}
+      dnsPolicy: {{ .Values.global.dnsPolicy }}
       {{- end }}
       {{- if .Values.global.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.global.terminationGracePeriodSeconds }}
