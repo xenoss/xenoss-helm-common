@@ -44,6 +44,7 @@ global:
   podAnnotations: {}
   podManagementPolicy: Parallel
   hostNetwork: ""
+  minReadySeconds: ""
   dnsPolicy: ""
   podSecurityContext:
     enabled: false
