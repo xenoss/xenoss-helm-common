@@ -3,7 +3,7 @@
       hostNetwork: {{ .Values.global.hostNetwork }}
       {{- end }}
       {{- if .Values.global.minReadySeconds }}
-      hostNetwork: {{ .Values.global.minReadySeconds }}
+      minReadySeconds: {{ .Values.global.minReadySeconds }}
       {{- end }}
       {{- if .Values.global.dnsPolicy }}
       dnsPolicy: {{ .Values.global.dnsPolicy }}
