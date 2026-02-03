@@ -17,6 +17,9 @@ spec:
   {{- if .Values.global.updateStrategy }}
   updateStrategy: {{- toYaml .Values.global.updateStrategy | nindent 4 }}
   {{- end }}
+  {{- if .Values.global.minReadySeconds }}
+  minReadySeconds: {{ .Values.global.minReadySeconds }}
+  {{- end }}
   selector:
     matchLabels: {{- include "common.matchLabels" . | nindent 6 }}
   template:

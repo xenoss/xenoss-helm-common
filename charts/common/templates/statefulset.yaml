@@ -16,6 +16,9 @@ metadata:
 spec:
   replicas: {{ .Values.global.statefulset.replicaCount }}
   podManagementPolicy: {{ .Values.global.podManagementPolicy | quote }}
+  {{- if .Values.global.minReadySeconds }}
+  minReadySeconds: {{ .Values.global.minReadySeconds }}
+  {{- end }}
   selector:
     matchLabels: {{- include "common.matchLabels" . | nindent 6 }}
   serviceName: {{ printf "%s-headless" (include "common.fullname" .) }}
