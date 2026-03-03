@@ -252,3 +252,10 @@ global:
   statefulset:
     enabled: false
     replicaCount: 1
+
+  volumeClaimTemplates: []
+#    - name: www
+#      volumeMode: ""
+#      accessMode: "ReadWriteOnce"
+#      storageClassName: "my-storage-class"
+#      storage: 1Gi

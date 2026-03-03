@@ -99,4 +99,20 @@
         {{- tpl ( $volumes | toYaml ) $ | nindent 8 }}
       {{- end }}
 
-{{- end -}}
+  {{- if .Values.global.volumeClaimTemplates }}
+  volumeClaimTemplates:
+    {{- range $volumeClaimTemplate := .Values.global.volumeClaimTemplates }}
+      - metadata:
+          name: {{ $volumeClaimTemplate.name }}
+        spec:
+          {{- if $volumeClaimTemplate.volumeMode }}
+          volumeMode: {{ $volumeClaimTemplate.volumeMode }}
+          {{- end }}
+          accessModes:
+            - {{ $volumeClaimTemplate.accessMode }}
+          storageClassName: {{ $volumeClaimTemplate.storageClassName }}
+          resources:
+            requests:
+              storage: {{ $volumeClaimTemplate.storage }}
+    {{- end }}
+  {{- end -}}
