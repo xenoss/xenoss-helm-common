@@ -412,6 +412,26 @@ entries:
   - annotations:
       category: Infrastructure
     apiVersion: v2
+    appVersion: 2.0.18
+    created: "2026-03-03T10:51:56.488352558Z"
+    description: A Library Helm Chart for grouping common logic between xenoss charts.
+      This chart is not deployable by itself.
+    digest: 5f275fca3bd70e9d62b221bb86feb8378bfbd10d5441d9055eb4e68690db43c7
+    home: https://xenoss.github.io/xenoss-helm-common
+    keywords:
+    - common
+    - template
+    - function
+    name: common
+    sources:
+    - https://xenoss.github.io/xenoss-helm-common
+    type: application
+    urls:
+    - https://github.com/xenoss/xenoss-helm-common/releases/download/common-2.0.18/common-2.0.18.tgz
+    version: 2.0.18
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
     appVersion: 2.0.17
     created: "2026-03-03T10:32:27.266125195Z"
     description: A Library Helm Chart for grouping common logic between xenoss charts.
@@ -993,4 +1013,4 @@ entries:
     urls:
     - https://github.com/xenoss/xenoss-helm-common/releases/download/uploader-1.0.9/uploader-1.0.9.tgz
     version: 1.0.9
-generated: "2026-03-03T10:32:27.266244159Z"
+generated: "2026-03-03T10:51:56.488491208Z"
