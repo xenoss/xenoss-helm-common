@@ -19,3 +19,14 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
+{{- define "filesystem.env.map" -}}
+  {{- if hasKey .Values.global.storage "configurationFrom" }}
+    {{- range .Values.global.storage.configurationFrom.secret.properties }}
+{{ .env }}:
+  valueFrom:
+    secretKeyRef:
+      name: {{ $.Values.global.storage.configurationFrom.secret.name  | quote }}
+      key: {{ .source | quote }}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

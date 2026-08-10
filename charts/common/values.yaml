@@ -5,6 +5,7 @@ envVarsSecret: []
 envVarsCM: []
 #    - my-configmap-name
 volumes: []
+volumeMounts: []
 configMaps: {}
 # default:
 #   enabled: false
@@ -36,6 +37,8 @@ containerPorts: []
 #  - name: httpprivate
 #    containerPort: 8081
 
+extraDeploy: []
+
 global:
   nameOverride: ""
   fullnameOverride: ""
@@ -53,11 +56,14 @@ global:
     enabled: false
   #    runAsUser: 1001
   #    runAsNonRoot: true
+  priorityClassName: ""
 
   imageRegistry: ""
   imagePullSecrets: []
   terminationGracePeriodSeconds: ""
-  nodeSelector: {}
+  nodeSelector: []
+#    - key: app/mc
+#      value: ""
   tolerations: []
   # - key: "key"
   #   operator: "Equal"
@@ -79,6 +85,8 @@ global:
   #   type: Opaque
   #   values:
   #     password: "123"
+  envVars: {}
+  #  key: value
   extraEnvVars: []
   #  - name: key
   #    value: value
@@ -112,6 +120,26 @@ global:
     #      matchLabels:
     #       app: my-app
     existingVolume: ""
+
+  httproute:
+    enabled: false
+    annotations: {}
+    hostname: ""
+    path: ""
+    service:
+      name: ""
+      port: ""
+      weight: 1
+    cors:
+      enabled: false
+      allowOrigins: ["*"]
+      allowMethods: []
+      allowHeaders: ["*"]
+    clientSettings:
+      maxSize: ""
+    parentRef: ""
+#      name: dsp-nginx-gateway
+#      namespace: nginx-gateway
 
   ingress:
     enabled: false
@@ -156,6 +184,8 @@ global:
     ##           port:
     ##             name: http
 
+  volumes: {}
+  volumeMounts: {}
   extraVolumes: []
   extraVolumeMounts: []
 

@@ -10,13 +10,23 @@
       {{- end }}
       {{- include "common.pullSecrets" $ | nindent 6 }}
       {{- if .Values.global.nodeSelector }}
-      nodeSelector: {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
+      nodeSelector:
+      {{- if eq (kindOf .Values.global.nodeSelector) "map" }}
+        {{- tpl ( .Values.global.nodeSelector | toYaml ) $ | nindent 8 }}
+      {{- else }}
+        {{- range .Values.global.nodeSelector }}
+        {{ tpl .key $  | quote }}: {{ tpl .value $ | quote }}
+        {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.global.tolerations }}
       tolerations: {{- tpl ( .Values.global.tolerations | toYaml ) $ | nindent 8 }}
       {{- end }}
       {{- if .Values.global.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.global.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.global.priorityClassName }}
+      priorityClassName: {{ .Values.global.priorityClassName }}
       {{- end }}
       containers:
         - name: {{ include "common.name" $ }}
@@ -34,10 +44,17 @@
           {{- if .Values.global.lifecycleHooks }}
           lifecycle: {{- tpl ( .Values.global.lifecycleHooks | toYaml ) $ | nindent 12 }}
           {{- end }}
-          {{- if or .Values.global.extraEnvVars .Values.envVars }}
+          {{- if or .Values.global.envVars .Values.global.extraEnvVars .Values.envVars }}
           {{- $envVars := list }}
           {{- $envVars = concat $envVars ( include "common.tpl" ( dict "Template" .Values.envVars "Root" $ ) | fromYamlArray ) }}
           {{- $envVars = concat $envVars ( include "common.tpl" ( dict "Template" .Values.global.extraEnvVars "Root" $ ) | fromYamlArray ) }}
+          {{- range $k, $v := ( include "common.tpl" ( dict "Template" .Values.global.envVars "Root" $ ) | fromYaml ) }}
+            {{- if eq (kindOf $v) "map" }}
+              {{- $envVars = append $envVars ( merge (dict "name" $k ) $v ) }}
+            {{- else }}
+              {{- $envVars = append $envVars (dict "name" $k "value" $v) }}
+            {{- end }}
+          {{- end }}
           env:
             {{- $envVars | toYaml | nindent 12 }}
           {{- end }}
@@ -73,8 +90,17 @@
           {{- if .Values.global.resources }}
           resources: {{- toYaml .Values.global.resources | nindent 12 }}
           {{- end }}
-          {{- if or .Values.volumeMounts .Values.global.extraVolumeMounts }}
+          {{- if or .Values.global.volumeMounts .Values.volumeMounts .Values.global.extraVolumeMounts }}
             {{- $volumeMounts := concat (list) .Values.volumeMounts .Values.global.extraVolumeMounts }}
+            {{- range $k, $v := ( include "common.tpl" ( dict "Template" .Values.global.volumeMounts "Root" $ ) | fromYaml ) }}
+              {{- if kindIs "slice" $v }}
+                {{- range $item := $v }}
+                  {{- $volumeMounts = append $volumeMounts ( merge (dict "name" $k ) $item ) }}
+                {{- end }}
+              {{- else }}
+              {{- $volumeMounts = append $volumeMounts ( merge (dict "name" $k ) $v ) }}
+              {{- end }}
+            {{- end }}
           volumeMounts:
             {{- include "common.volumesMounts" ( dict "VolumeMounts" $volumeMounts "Root" $ ) }}
           {{- end }}
@@ -87,8 +113,14 @@
       initContainers:
       {{- tpl ( $initContainers | toYaml ) $ | nindent 8 }}
       {{- end }}
-      {{- if or .Values.volumes .Values.global.extraVolumes }}
+      {{- if or .Values.global.volumes .Values.volumes .Values.global.extraVolumes }}
         {{- $volumes := concat (list) .Values.volumes .Values.global.extraVolumes }}
+        {{- range $k, $v := ( include "common.tpl" ( dict "Template" .Values.global.volumes "Root" $ ) | fromYaml ) }}
+          {{- if eq $k "default" }}
+            {{- $k := include "common.fullname" $ }}
+          {{- end }}
+          {{- $volumes = append $volumes ( merge (dict "name" $k ) $v ) }}
+        {{- end }}
       volumes:
         {{- range $volume := $volumes }}
           {{- /*    a lowercase RFC 1123 label must consist of lower case alphanumeric characters or '-',*/}}

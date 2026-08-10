@@ -1,4 +1,4 @@
-{{- if .Values.global.persistence.enabled }}
+{{- if and .Values.global.persistence.enabled ( not .Values.global.persistence.localpath )}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

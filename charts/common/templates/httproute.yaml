@@ -1,0 +1,92 @@
+{{- if .Values.global.httproute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels" . | nindent 4 }}
+    {{- if .Values.global.commonLabels }}
+    {{- tpl ( .Values.global.commonLabels | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if .Values.global.httproute.annotations }}
+    {{- tpl ( .Values.global.httproute.annotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+    {{- if .Values.global.commonAnnotations }}
+    {{- tpl ( .Values.global.commonAnnotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+spec:
+  parentRefs:
+    {{- if .Values.global.httproute.parentRef }}
+    - name: {{ .Values.global.httproute.parentRef.name }}
+      namespace: {{ .Values.global.httproute.parentRef.namespace }}
+    {{- else }}
+    - name: dsp-nginx-gateway
+      namespace: nginx-gateway
+    {{- end }}
+      sectionName: https
+      group: gateway.networking.k8s.io
+      kind: Gateway
+  hostnames:
+  - {{ .Values.global.httproute.hostname | quote }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ .Values.global.httproute.path }}
+      backendRefs:
+        - name: {{ .Values.global.httproute.service.name }}
+          port: {{ .Values.global.httproute.service.port }}
+          group: ''
+          kind: Service
+{{- if .Values.global.httproute.service.weight }}
+          weight: {{ .Values.global.httproute.service.weight }}
+{{- end }}
+{{- if .Values.global.httproute.cors.enabled }}
+      filters:
+        - type: CORS
+          cors:
+            maxAge: 5
+            allowCredentials: false
+            {{- if .Values.global.httproute.cors.allowOrigins }}
+            allowOrigins:
+              {{- tpl ( .Values.global.httproute.cors.allowOrigins | toYaml ) . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.global.httproute.cors.allowMethods }}
+            allowMethods:
+              {{- tpl ( .Values.global.httproute.cors.allowMethods | toYaml ) . | nindent 12 }}
+            {{- end }}
+            {{- if .Values.global.httproute.cors.allowHeaders }}
+            allowHeaders:
+              {{- tpl ( .Values.global.httproute.cors.allowHeaders | toYaml ) . | nindent 12 }}
+            {{- end }}
+{{- end }}
+
+{{- if .Values.global.httproute.clientSettings.maxSize }}
+---
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels" . | nindent 4 }}
+    {{- if .Values.global.commonLabels }}
+    {{- tpl ( .Values.global.commonLabels | toYaml ) $ | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- if .Values.global.httproute.annotations }}
+    {{- tpl ( .Values.global.httproute.annotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+    {{- if .Values.global.commonAnnotations }}
+    {{- tpl ( .Values.global.commonAnnotations | toYaml ) $ | nindent 4 }}
+    {{- end }}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: {{ include "common.fullname" . }}
+  body:
+    maxSize: {{ .Values.global.httproute.clientSettings.maxSize | quote}}
+
+{{- end }}
+{{- end }}

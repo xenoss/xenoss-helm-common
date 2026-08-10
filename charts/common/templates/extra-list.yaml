@@ -1,4 +1,7 @@
-{{- range .Values.global.extraDeploy }}
+{{- $extraDeploy := list }}
+{{- $extraDeploy = concat $extraDeploy .Values.extraDeploy }}
+{{- $extraDeploy = concat $extraDeploy .Values.global.extraDeploy }}
+{{- range $extraDeploy }}
 ---
 {{ . | toYaml }}
 {{- end }}
